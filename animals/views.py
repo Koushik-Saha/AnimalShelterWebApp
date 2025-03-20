@@ -10,7 +10,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-
+from rest_framework import generics, filters
 
 
 # Register a New Staff Member
@@ -55,9 +55,10 @@ def login_user(request):
 class AnimalListCreateView(generics.ListCreateAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
-    # permission_classes = [IsAuthenticated]  # Require login
-    authentication_classes = [TokenAuthentication]  # ✅ Explicitly set
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'species', 'status']
 
     def create(self, request, *args, **kwargs):
         # Check if the request contains a list of objects
