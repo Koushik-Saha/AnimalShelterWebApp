@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 
@@ -54,7 +55,9 @@ def login_user(request):
 class AnimalListCreateView(generics.ListCreateAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
-    permission_classes = [IsAuthenticated]  # Require login
+    # permission_classes = [IsAuthenticated]  # Require login
+    authentication_classes = [TokenAuthentication]  # ✅ Explicitly set
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         # Check if the request contains a list of objects
@@ -73,4 +76,5 @@ class AnimalListCreateView(generics.ListCreateAPIView):
 class AnimalDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
+    authentication_classes = [TokenAuthentication]  # ✅ Explicitly set
     permission_classes = [IsAuthenticated]  # Require login
