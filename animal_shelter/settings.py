@@ -140,3 +140,12 @@ LOGGING = {
         },
     },
 }
+
+# Stripe Configuration
+STRIPE_SECRET_KEY = "sk_test_51R4rQnKx8kE1TxFq5QFxopwc0QXIMMECYcDV7hAEqRmbnac7xsvjkmtStOr6VJ17JbFA1Cb9kz4gJ9ujBakoFHYc00vDjDTM2j"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51R4rQnKx8kE1TxFqhdTx4A55gWOOCznaJTXA7tTK2GXL5jGaeOZDcXedDGl1QIRNhcterdTAALrLNW54UmYnKhdC00shdlAnCt"
+
+# PayPal Configuration
+PAYPAL_CLIENT_ID = "AVVwBXlAJ_kxHwx4jCd7QI9HcTvj1eqYxfg_qmehlXa9QNGC2YDZCdbSxYUyLp_vcJmazzNleelEqJw8"
+PAYPAL_SECRET = "EIuMCtZ3crXhat57otfxBC-hAsla7ZBJU8p5MnvvrHiug_OL7ak96vuhwlsvj7b1sqXrINmhOCH8jP0J"
+PAYPAL_MODE = "sandbox"  # Change to "live" in production
