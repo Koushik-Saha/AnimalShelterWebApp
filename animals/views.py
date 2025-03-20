@@ -16,6 +16,8 @@ from .permissions import IsAdminOrReadOnly
 from .models import Donation
 from django.conf import settings
 from .utils import send_email
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 
@@ -167,3 +169,11 @@ class PublicAnimalListView(generics.ListAPIView):
     queryset = Animal.objects.filter(status="available")
     serializer_class = AnimalSerializer
     permission_classes = [AllowAny]  # No authentication required
+
+class FilteredAnimalListView(generics.ListAPIView):
+    queryset = Animal.objects.all()
+    serializer_class = AnimalSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["name", "species", "breed"]
+    filterset_fields = ["status"]

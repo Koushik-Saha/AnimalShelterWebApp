@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",  # ✅ Enable token authentication
-    "animals",  # Your app
+    "animals",  # Your app,
+    "django_filters"
 ]
 
 # ✅ Fix: Ensure Token Authentication Works
