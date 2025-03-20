@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
+from dotenv import load_dotenv
 
 from pathlib import Path
 
@@ -141,11 +143,14 @@ LOGGING = {
     },
 }
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Stripe Configuration
-STRIPE_SECRET_KEY = "sk_test_51R4rQnKx8kE1TxFq5QFxopwc0QXIMMECYcDV7hAEqRmbnac7xsvjkmtStOr6VJ17JbFA1Cb9kz4gJ9ujBakoFHYc00vDjDTM2j"
-STRIPE_PUBLISHABLE_KEY = "pk_test_51R4rQnKx8kE1TxFqhdTx4A55gWOOCznaJTXA7tTK2GXL5jGaeOZDcXedDGl1QIRNhcterdTAALrLNW54UmYnKhdC00shdlAnCt"
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 
 # PayPal Configuration
-PAYPAL_CLIENT_ID = "AVVwBXlAJ_kxHwx4jCd7QI9HcTvj1eqYxfg_qmehlXa9QNGC2YDZCdbSxYUyLp_vcJmazzNleelEqJw8"
-PAYPAL_SECRET = "EIuMCtZ3crXhat57otfxBC-hAsla7ZBJU8p5MnvvrHiug_OL7ak96vuhwlsvj7b1sqXrINmhOCH8jP0J"
-PAYPAL_MODE = "sandbox"  # Change to "live" in production
+PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET = os.getenv("PAYPAL_SECRET")
+PAYPAL_MODE = os.getenv("PAYPAL_MODE", "sandbox")  # Default to sandbox
