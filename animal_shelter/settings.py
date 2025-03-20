@@ -41,12 +41,13 @@ INSTALLED_APPS = [
 # ✅ Fix: Ensure Token Authentication Works
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',  # Allows Django admin authentication
-        'rest_framework.authentication.TokenAuthentication',  # Enables token authentication in Postman
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Enforces authentication on all endpoints
-    ]
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Show 10 results per page
 }
 
 MIDDLEWARE = [
