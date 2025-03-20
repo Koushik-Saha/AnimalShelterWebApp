@@ -162,3 +162,8 @@ class AnimalDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AnimalSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+
+class PublicAnimalListView(generics.ListAPIView):
+    queryset = Animal.objects.filter(status="available")
+    serializer_class = AnimalSerializer
+    permission_classes = [AllowAny]  # No authentication required

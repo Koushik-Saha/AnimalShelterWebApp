@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AnimalListCreateView, AnimalDetailView
+from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView
 from .views import register_staff, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -11,4 +11,5 @@ urlpatterns = [
     path('animals/<int:pk>/', AnimalDetailView.as_view(), name='animal-detail'),
     path("stripe-payment/", create_stripe_payment, name="stripe-payment"),
     path("paypal-payment/", create_paypal_payment, name="paypal-payment"),
+    path('public-animals/', PublicAnimalListView.as_view(), name='public-animals'),
 ]
