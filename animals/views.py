@@ -45,6 +45,13 @@ def create_paypal_payment(request):
             },
         })
 
+        # Send email confirmation
+        send_email(
+            to_email=request.user.email,
+            subject="Donation Received",
+            message=f"Thank you for donating ${amount} to our shelter!",
+        )
+
         if payment.create():
             approval_url = payment["links"][1]["href"]
             return Response({"approval_url": approval_url}, status=200)
