@@ -1,0 +1,22 @@
+# Python bytecode and cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment (venv)
+venv/
+.env/
+.venv/
+env/
+Pipfile.lock
+poetry.lock
+
+# Django-related
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+local_settings.py
+.env
