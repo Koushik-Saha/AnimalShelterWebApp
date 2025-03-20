@@ -11,6 +11,8 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, filters
+from .permissions import IsAdminOrReadOnly
+
 
 
 # Register a New Staff Member
@@ -77,5 +79,5 @@ class AnimalListCreateView(generics.ListCreateAPIView):
 class AnimalDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
-    authentication_classes = [TokenAuthentication]  # ✅ Explicitly set
-    permission_classes = [IsAuthenticated]  # Require login
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
