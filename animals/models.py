@@ -56,3 +56,10 @@ class AdoptionRequest(models.Model):
 
     def __str__(self):
         return f"{self.user} -> {self.animal.name} ({self.status})"
+
+class AnimalImage(models.Model):
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="animal_images/")
+
+    def __str__(self):
+        return f"Image for {self.animal.name}"
