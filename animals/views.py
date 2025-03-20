@@ -1,4 +1,5 @@
 import stripe
+import paypalrestsdk
 from .models import Animal
 from .serializers import AnimalSerializer
 from django.contrib.auth.models import User
@@ -14,8 +15,42 @@ from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly
 from .models import Donation
 from django.conf import settings
+from django.conf import settings
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_SECRET,
+})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_paypal_payment(request):
+    try:
+        amount = request.data.get("amount")
+        if not amount:
+            return Response({"error": "Amount is required"}, status=400)
+
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {"payment_method": "paypal"},
+            "transactions": [{"amount": {"total": str(amount), "currency": "USD"}}],
+            "redirect_urls": {
+                "return_url": "http://127.0.0.1:8000/api/paypal/success/",
+                "cancel_url": "http://127.0.0.1:8000/api/paypal/cancel/",
+            },
+        })
+
+        if payment.create():
+            approval_url = payment["links"][1]["href"]
+            return Response({"approval_url": approval_url}, status=200)
+        else:
+            return Response({"error": payment.error}, status=500)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
