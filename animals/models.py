@@ -47,3 +47,12 @@ class Animal(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.species}) - {self.get_status_display()}"
+
+class AdoptionRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[("Pending", "Pending"), ("Approved", "Approved"), ("Rejected", "Rejected")], default="Pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} -> {self.animal.name} ({self.status})"
