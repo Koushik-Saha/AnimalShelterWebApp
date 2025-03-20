@@ -15,7 +15,8 @@ from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly
 from .models import Donation
 from django.conf import settings
-from django.conf import settings
+from .utils import send_email
+
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -73,6 +74,13 @@ def create_stripe_payment(request):
             amount=amount,
             transaction_id=payment_intent.id,
             status="Pending",
+        )
+
+        # Send email confirmation
+        send_email(
+            to_email=request.user.email,
+            subject="Donation Received",
+            message=f"Thank you for donating ${amount} to our shelter!",
         )
 
         return Response({"client_secret": payment_intent.client_secret, "donation_id": donation.id}, status=200)
