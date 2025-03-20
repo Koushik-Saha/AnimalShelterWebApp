@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+import stripe
 from .models import Animal
 from .serializers import AnimalSerializer
 from django.contrib.auth.models import User
@@ -12,6 +12,37 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly
+from .models import Donation
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_stripe_payment(request):
+    try:
+        amount = request.data.get("amount")
+        if not amount:
+            return Response({"error": "Amount is required"}, status=400)
+
+        # Convert amount to cents (Stripe uses cents)
+        payment_intent = stripe.PaymentIntent.create(
+            amount=int(float(amount) * 100),
+            currency="usd",
+            payment_method_types=["card"],
+        )
+
+        # Save donation record
+        donation = Donation.objects.create(
+            user=request.user,
+            amount=amount,
+            transaction_id=payment_intent.id,
+            status="Pending",
+        )
+
+        return Response({"client_secret": payment_intent.client_secret, "donation_id": donation.id}, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
 
 
 
