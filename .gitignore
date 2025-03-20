@@ -20,3 +20,8 @@ staticfiles/
 static/
 local_settings.py
 .env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
