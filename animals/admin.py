@@ -1,3 +1,14 @@
 from django.contrib import admin
+from animals.models import Animal, AdoptionRequest, Donation
 
-# Register your models here.
+@admin.register(Animal)
+class AnimalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'species', 'status', 'created_at')
+
+@admin.register(AdoptionRequest)
+class AdoptionRequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'animal', 'status', 'created_at')
+
+@admin.register(Donation)
+class DonationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'amount', 'status', 'created_at')
