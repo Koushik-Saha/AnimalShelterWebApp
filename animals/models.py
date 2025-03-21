@@ -56,7 +56,7 @@ class AdoptionRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} -> {self.animal.name} ({self.status})"
+        return f"{self.user.username} - {self.animal.name} ({self.status})"
 
 class AnimalImage(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name="images")
