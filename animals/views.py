@@ -15,7 +15,7 @@ from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly
 from .models import Donation
 from django.conf import settings
-from .utils import send_email
+from .utils import send_email, send_adoption_email
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
@@ -240,6 +240,7 @@ class AdoptionRequestUpdateView(generics.UpdateAPIView):
             if serializer.validated_data.get('status') == 'Approved':
                 request.animal.status = 'adopted'
                 request.animal.save()
+                send_adoption_email(request.user.email, request.animal.name, status)
         serializer.save()
 
 # Delete an adoption request
