@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Animal, AdoptionRequest
+from .models import Animal, AdoptionRequest, Profile
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
 
 
 class AnimalSerializer(serializers.ModelSerializer):
