@@ -130,6 +130,7 @@ def create_stripe_payment(request):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_user(request):
     """
     API to register new users and assign them a role.

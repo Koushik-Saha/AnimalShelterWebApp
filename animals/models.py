@@ -18,21 +18,15 @@ class Profile(models.Model):
         return f"{self.user.username}'s Profile"
 
 class CustomUser(AbstractUser):
-    """
-    Custom user model with roles.
-    """
-    ROLE_CHOICES = [
-        ('user', 'User'),         # 🏠 Can view animals, request adoptions, donate
-        ('staff', 'Shelter Staff'),  # 👩‍⚕️ Can manage animals, approve adoptions
-        ('admin', 'Admin'),       # 🏛 Full access, financial reports
-    ]
-
+    ROLE_CHOICES = (
+        ('user', 'User'),
+        ('staff', 'Shelter Staff'),
+        ('admin', 'Admin'),
+    )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-    phone = models.CharField(max_length=15, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.username} - {self.role}"
+        return f"{self.username} ({self.role})"
 
 
 class Donation(models.Model):
