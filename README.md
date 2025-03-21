@@ -83,7 +83,7 @@ $ python manage.py runserver
 ```json
 {
   "message": "Staff registered successfully",
-  "token": "5598f0dbc61cbf1f322e52c441f5913fcfe7e962"
+  "token": {{token}}
 }
 ```
 
@@ -102,14 +102,14 @@ $ python manage.py runserver
 
 ```json
 {
-  "token": "5598f0dbc61cbf1f322e52c441f5913fcfe7e962"
+  "token": {{token}}
 }
 ```
 
 Use this token in headers for other API calls:
 
 ```json
-Authorization: Token 5598f0dbc61cbf1f322e52c441f5913fcfe7e962
+Authorization: Token {{token}}
 ```
 
 ---
@@ -121,7 +121,7 @@ Authorization: Token 5598f0dbc61cbf1f322e52c441f5913fcfe7e962
 **Endpoint:** `GET /api/animals/` **Headers:**
 
 ```json
-Authorization: Token 5598f0dbc61cbf1f322e52c441f5913fcfe7e962
+Authorization: Token {{token}}
 ```
 
 **Response:**
