@@ -7,6 +7,7 @@ class Profile(models.Model):
     address = models.TextField(blank=True, null=True)
     adopted_animals = models.ManyToManyField("Animal", blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    home_verification_document = models.FileField(upload_to='home_verifications/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
