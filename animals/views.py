@@ -1,7 +1,7 @@
 import logging
 import stripe
 import paypalrestsdk
-from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport
+from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
@@ -126,9 +126,6 @@ def create_stripe_payment(request):
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
-
-
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
@@ -173,6 +170,25 @@ def login_user(request):
 
     token, created = Token.objects.get_or_create(user=user)
     return Response({"token": token.key}, status=status.HTTP_200_OK)
+
+
+def approve_adoption(request, adoption_id):
+    try:
+        adoption = AdoptionRequest.objects.get(id=adoption_id, status="Pending")
+        adoption.status = "Approved"
+        adoption.save()
+
+        # Send Notification
+        Notification.objects.create(
+            user=adoption.user,
+            message=f"Your adoption request for {adoption.animal.name} has been approved!"
+        )
+
+        return Response({"message": "Adoption approved and notification sent."}, status=status.HTTP_200_OK)
+
+    except AdoptionRequest.DoesNotExist:
+        return Response({"error": "Adoption request not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+
 
 # List and Create Animals
 class AnimalListCreateView(generics.ListCreateAPIView):
