@@ -22,4 +22,16 @@ class AnimalSerializer(serializers.ModelSerializer):
 class AdoptionRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdoptionRequest
-        fields = '__all__'
+        fields = ['user', 'animal', 'status']
+
+    def validate(self, data):
+        """
+        Ensure that the user hasn't already requested adoption for the same animal.
+        """
+        user = self.context['request'].user
+        animal = data.get('animal')
+
+        if AdoptionRequest.objects.filter(user=user, animal=animal).exists():
+            raise serializers.ValidationError({"error": "You have already requested adoption for this animal."})
+
+        return data

@@ -1,5 +1,7 @@
+import logging
 import stripe
 import paypalrestsdk
+from rest_framework.exceptions import ValidationError
 from .models import Animal, AdoptionRequest
 from .serializers import AnimalSerializer
 from django.contrib.auth.models import User
@@ -23,6 +25,7 @@ from .serializers import AdoptionRequestSerializer
 
 
 
+logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -218,15 +221,34 @@ class AdoptionRequestListView(generics.ListAPIView):
 
 # Create a new adoption request
 class AdoptionRequestCreateView(generics.CreateAPIView):
+    """
+    API view for submitting an adoption request.
+    """
     serializer_class = AdoptionRequestSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        animal = serializer.validated_data['animal']
+        user = self.request.user
+        animal = serializer.validated_data.get('animal')
+
+        # Check if the animal exists
+        if not Animal.objects.filter(id=animal.id).exists():
+            return Response({"error": "Invalid animal ID. This animal does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the animal is available for adoption
         if animal.status != 'available':
             return Response({"error": "This animal is no longer available for adoption."}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer.save(user=self.request.user)
+        # Check if the user already requested adoption for this animal
+        if AdoptionRequest.objects.filter(user=user, animal=animal).exists():
+            logger.warning(f"User {user.username} attempted duplicate adoption request for {animal.name}.")
+            return Response({"error": "You have already requested adoption for this animal."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the adoption request with the logged-in user
+        serializer.save(user=user, status="Pending")
+        logger.info(f"Adoption Request submitted by {user.username} for {animal.name}.")
+
+        return Response({"message": "Adoption request submitted successfully!", "data": serializer.data}, status=status.HTTP_201_CREATED)
 
 # Approve or reject an adoption request (Admin only)
 class AdoptionRequestUpdateView(generics.UpdateAPIView):
