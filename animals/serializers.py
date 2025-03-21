@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from .models import Animal, AdoptionRequest, Profile
 
+class AdoptionHistorySerializer(serializers.ModelSerializer):
+    animal_name = serializers.CharField(source="animal.name", read_only=True)
+
+    class Meta:
+        model = AdoptionRequest
+        fields = ['id', 'animal_name', 'status', 'created_at']
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
