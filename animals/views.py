@@ -1,6 +1,9 @@
 import logging
 import stripe
 import paypalrestsdk
+from rest_framework.views import APIView
+
+from . import models
 from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
     NotificationSerializer
@@ -348,3 +351,18 @@ class NotificationListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user, is_read=False)
+
+class AdminDashboardView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        total_animals = Animal.objects.count()
+        total_adoptions = AdoptionRequest.objects.filter(status="Approved").count()
+        total_donations = Donation.objects.aggregate(total=models.Sum("amount"))["total"] or 0
+
+        data = {
+            "total_animals": total_animals,
+            "total_adoptions": total_adoptions,
+            "total_donations": total_donations,
+        }
+        return Response(data)
