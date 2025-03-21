@@ -18,10 +18,36 @@ from django.conf import settings
 from .utils import send_email
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.mail import send_mail
+
 
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])  # Require authentication
+def send_email(request):
+    """Send an email notification"""
+    subject = request.data.get("subject", "Default Subject")
+    message = request.data.get("message", "Default Message")
+    recipient = request.data.get("recipient")
+
+    if not recipient:
+        return Response({"error": "Recipient email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,  # Sender email from settings.py
+            [recipient],  # Recipient email
+            fail_silently=False,
+        )
+        return Response({"message": "Email sent successfully"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 paypalrestsdk.configure({
     "mode": settings.PAYPAL_MODE,
