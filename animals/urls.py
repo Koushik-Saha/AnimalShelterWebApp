@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
-    UserProfileView, AdoptionHistoryView
+    UserProfileView, AdoptionHistoryView, UploadHomeVerificationView
 from .views import register_staff, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -30,5 +30,7 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='user-profile'),
     # Adoption History
     path('adoption-history/', AdoptionHistoryView.as_view(), name='adoption-history'),
+    # Upload home verification
+    path('upload-home-verification/', UploadHomeVerificationView.as_view(), name='upload-home-verification'),
 
 ]
