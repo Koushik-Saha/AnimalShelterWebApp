@@ -92,26 +92,42 @@ class AnimalImage(models.Model):
 @receiver(post_migrate)
 def create_default_roles(sender, **kwargs):
     """
-    Automatically creates default user roles with permissions.
+    Ensures default roles (User, Staff, Admin) and permissions exist after migrations.
     """
-    if sender.name == "animals":  # Replace with your app name
-        user_group, _ = Group.objects.get_or_create(name="User")
-        staff_group, _ = Group.objects.get_or_create(name="Shelter Staff")
-        admin_group, _ = Group.objects.get_or_create(name="Admin")
+    if sender.name != "animals":
+        return  # Ensure this only runs for the 'animals' app
 
-        # Assign permissions
-        user_permissions = ['view_animal', 'add_adoptionrequest']
-        staff_permissions = ['add_animal', 'change_animal', 'delete_animal', 'change_adoptionrequest']
-        admin_permissions = ['add_animal', 'change_animal', 'delete_animal', 'change_adoptionrequest', 'view_financial_reports']
+    print("Creating default roles and permissions...")
 
-        for perm in user_permissions:
-            permission = Permission.objects.get(codename=perm)
-            user_group.permissions.add(permission)
+    # Define roles
+    roles = {
+        "User": [],
+        "Shelter Staff": ["add_animal", "change_animal", "delete_animal", "view_animal"],
+        "Admin": ["add_animal", "change_animal", "delete_animal", "view_animal", "view_financialreport"],
+    }
 
-        for perm in staff_permissions:
-            permission = Permission.objects.get(codename=perm)
-            staff_group.permissions.add(permission)
+    # Create groups and assign permissions
+    for role_name, permissions in roles.items():
+        group, created = Group.objects.get_or_create(name=role_name)
+        for perm in permissions:
+            try:
+                permission = Permission.objects.get(codename=perm)
+                group.permissions.add(permission)
+            except Permission.DoesNotExist:
+                print(f"⚠️ Warning: Permission '{perm}' does not exist yet.")
 
-        for perm in admin_permissions:
-            permission = Permission.objects.get(codename=perm)
-            admin_group.permissions.add(permission)
+    print("✅ Default roles and permissions created successfully.")
+
+class FinancialReport(models.Model):
+    """
+    Model to store financial reports for the animal shelter.
+    Only admins should have access to this data.
+    """
+    title = models.CharField(max_length=255)
+    report_date = models.DateField(auto_now_add=True)
+    total_donations = models.DecimalField(max_digits=12, decimal_places=2)
+    expenses = models.DecimalField(max_digits=12, decimal_places=2)
+    net_balance = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.title} - {self.report_date}"

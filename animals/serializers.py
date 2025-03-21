@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Animal, AdoptionRequest, Profile
+from .models import Animal, AdoptionRequest, Profile, FinancialReport
+
+
+class FinancialReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinancialReport
+        fields = "__all__"
 
 class AdoptionHistorySerializer(serializers.ModelSerializer):
     animal_name = serializers.CharField(source="animal.name", read_only=True)

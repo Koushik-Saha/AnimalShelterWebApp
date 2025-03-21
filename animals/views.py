@@ -1,8 +1,8 @@
 import logging
 import stripe
 import paypalrestsdk
-from .models import Animal, AdoptionRequest, Profile, CustomUser
-from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer
+from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport
+from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, filters
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsUser, IsStaff, IsAdmin
 from .models import Donation
 from django.conf import settings
 from .utils import send_email, send_adoption_email
@@ -299,3 +299,27 @@ class UploadHomeVerificationView(generics.UpdateAPIView):
 
     def get_object(self):
         return Profile.objects.get(user=self.request.user)
+
+class AnimalListView(generics.ListAPIView):
+    """
+    Users can view the list of animals.
+    """
+    queryset = Animal.objects.all()
+    serializer_class = AnimalSerializer
+    permission_classes = [IsAuthenticated, IsUser]
+
+class ManageAnimalView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Shelter Staff can edit or remove animals.
+    """
+    queryset = Animal.objects.all()
+    serializer_class = AnimalSerializer
+    permission_classes = [IsAuthenticated, IsStaff]
+
+class FinancialReportsView(generics.ListAPIView):
+    """
+    Admins can view financial reports.
+    """
+    queryset = FinancialReport.objects.all()  # Assuming a model exists for financial reports
+    serializer_class = FinancialReportSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
