@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
-    AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView
+    AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
+    UserProfileView
 from .views import register_staff, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -25,5 +26,6 @@ urlpatterns = [
     path('adopt/requests/', AdoptionRequestListView.as_view(), name='adoption-requests'),
     path('adopt/requests/<int:pk>/', AdoptionRequestUpdateView.as_view(), name='update-adoption'),
     path('adopt/requests/<int:pk>/delete/', AdoptionRequestDeleteView.as_view(), name='delete-adoption'),
-
+    #Update profile
+    path('profile/', UserProfileView.as_view(), name='user-profile'),
 ]
