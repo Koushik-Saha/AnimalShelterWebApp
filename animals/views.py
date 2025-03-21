@@ -285,3 +285,10 @@ class AdoptionHistoryView(generics.ListAPIView):
 
     def get_queryset(self):
         return AdoptionRequest.objects.filter(user=self.request.user).order_by('-created_at')
+
+class UploadHomeVerificationView(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
