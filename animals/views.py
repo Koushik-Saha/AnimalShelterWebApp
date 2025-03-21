@@ -3,7 +3,7 @@ import stripe
 import paypalrestsdk
 from rest_framework.exceptions import ValidationError
 from .models import Animal, AdoptionRequest, Profile
-from .serializers import AnimalSerializer, ProfileSerializer
+from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -278,3 +278,10 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return Profile.objects.get(user=self.request.user)
+
+class AdoptionHistoryView(generics.ListAPIView):
+    serializer_class = AdoptionHistorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return AdoptionRequest.objects.filter(user=self.request.user).order_by('-created_at')
