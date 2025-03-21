@@ -2,7 +2,8 @@ import logging
 import stripe
 import paypalrestsdk
 from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification
-from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer
+from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
+    NotificationSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
@@ -340,3 +341,10 @@ class FinancialReportsView(generics.ListAPIView):
     queryset = FinancialReport.objects.all()  # Assuming a model exists for financial reports
     serializer_class = FinancialReportSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
+
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user, is_read=False)

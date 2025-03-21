@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Animal, AdoptionRequest, Profile, FinancialReport
+from .models import Animal, AdoptionRequest, Profile, FinancialReport, Notification
 
 
 class FinancialReportSerializer(serializers.ModelSerializer):
@@ -54,3 +54,9 @@ class AdoptionRequestSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": "You have already requested adoption for this animal."})
 
         return data
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
