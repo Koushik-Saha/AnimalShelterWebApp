@@ -1,6 +1,6 @@
 import stripe
 import paypalrestsdk
-from .models import Animal
+from .models import Animal, AdoptionRequest
 from .serializers import AnimalSerializer
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -19,6 +19,7 @@ from .utils import send_email
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
+from .serializers import AdoptionRequestSerializer
 
 
 
@@ -203,3 +204,46 @@ class FilteredAnimalListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name", "species", "breed"]
     filterset_fields = ["status"]
+
+# List all adoption requests (only for staff)
+class AdoptionRequestListView(generics.ListAPIView):
+    queryset = AdoptionRequest.objects.all()
+    serializer_class = AdoptionRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return AdoptionRequest.objects.all()
+        return AdoptionRequest.objects.filter(user=self.request.user)
+
+# Create a new adoption request
+class AdoptionRequestCreateView(generics.CreateAPIView):
+    serializer_class = AdoptionRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        animal = serializer.validated_data['animal']
+        if animal.status != 'available':
+            return Response({"error": "This animal is no longer available for adoption."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save(user=self.request.user)
+
+# Approve or reject an adoption request (Admin only)
+class AdoptionRequestUpdateView(generics.UpdateAPIView):
+    queryset = AdoptionRequest.objects.all()
+    serializer_class = AdoptionRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_update(self, serializer):
+        request = self.get_object()
+        if request.status == 'Pending' and self.request.user.is_staff:
+            if serializer.validated_data.get('status') == 'Approved':
+                request.animal.status = 'adopted'
+                request.animal.save()
+        serializer.save()
+
+# Delete an adoption request
+class AdoptionRequestDeleteView(generics.DestroyAPIView):
+    queryset = AdoptionRequest.objects.all()
+    serializer_class = AdoptionRequestSerializer
+    permission_classes = [IsAuthenticated]

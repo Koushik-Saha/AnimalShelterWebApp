@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Animal
+from .models import Animal, AdoptionRequest
+
 
 class AnimalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +18,8 @@ class AnimalSerializer(serializers.ModelSerializer):
         if len(value) < 2:
             raise serializers.ValidationError("Name must be at least 2 characters long.")
         return value
+
+class AdoptionRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdoptionRequest
+        fields = '__all__'
