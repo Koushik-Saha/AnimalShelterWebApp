@@ -1,15 +1,11 @@
 import logging
 import stripe
 import paypalrestsdk
-from rest_framework.exceptions import ValidationError
-from .models import Animal, AdoptionRequest, Profile
+from .models import Animal, AdoptionRequest, Profile, CustomUser
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -22,6 +18,10 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
 from .serializers import AdoptionRequestSerializer
+from django.contrib.auth.models import Group
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 
 
 
@@ -128,27 +128,34 @@ def create_stripe_payment(request):
 
 
 
-# Register a New Staff Member
+
 @api_view(['POST'])
-@permission_classes([AllowAny])
-def register_staff(request):
-    """Endpoint to register a staff user"""
+def register_user(request):
+    """
+    API to register new users and assign them a role.
+    """
     username = request.data.get('username')
     password = request.data.get('password')
+    role = request.data.get('role', 'user')  # Default role is 'user'
 
     if not username or not password:
-        return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+    if CustomUser.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, password=password)
-    user.is_staff = True  # Mark as staff
-    user.save()
+    user = CustomUser.objects.create_user(username=username, password=password, role=role)
 
-    token, created = Token.objects.get_or_create(user=user)
-    return Response({"message": "Staff registered successfully", "token": token.key}, status=status.HTTP_201_CREATED)
+    # Assign user to the correct group
+    if role == 'staff':
+        group = Group.objects.get(name="Shelter Staff")
+    elif role == 'admin':
+        group = Group.objects.get(name="Admin")
+    else:
+        group = Group.objects.get(name="User")
 
+    user.groups.add(group)
+    return Response({"message": "User registered successfully!", "role": role}, status=status.HTTP_201_CREATED)
 
 # Login and Get Token
 @api_view(['POST'])

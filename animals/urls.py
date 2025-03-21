@@ -2,13 +2,13 @@ from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView
-from .views import register_staff, login_user
+from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
 
 urlpatterns = [
     # Login & Register
-    path('register/', register_staff, name='register_staff'),
+    path('register/', register_user, name='register_staff'),
     path('login/', login_user, name='login_user'),
     # Animal CRUD
     path('animals/', AnimalListCreateView.as_view(), name='animal-list'),
