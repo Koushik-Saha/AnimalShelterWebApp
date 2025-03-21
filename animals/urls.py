@@ -2,7 +2,7 @@ from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
-    ManageAnimalView
+    ManageAnimalView, NotificationListView, approve_adoption
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -37,5 +37,8 @@ urlpatterns = [
     path('animals/', AnimalListView.as_view(), name='list-animals'),
     path('manage-animal/<int:pk>/', ManageAnimalView.as_view(), name='manage-animal'),
     path('financial-reports/', FinancialReportsView.as_view(), name='financial-reports'),
+
+    path('notifications/', NotificationListView.as_view(), name='notifications'),
+    path('approve-adoption/<int:adoption_id>/', approve_adoption, name='approve_adoption'),
 
 ]
