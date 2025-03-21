@@ -2,6 +2,9 @@ from django.db import models
 # from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -84,3 +87,31 @@ class AnimalImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.animal.name}"
+
+
+@receiver(post_migrate)
+def create_default_roles(sender, **kwargs):
+    """
+    Automatically creates default user roles with permissions.
+    """
+    if sender.name == "animals":  # Replace with your app name
+        user_group, _ = Group.objects.get_or_create(name="User")
+        staff_group, _ = Group.objects.get_or_create(name="Shelter Staff")
+        admin_group, _ = Group.objects.get_or_create(name="Admin")
+
+        # Assign permissions
+        user_permissions = ['view_animal', 'add_adoptionrequest']
+        staff_permissions = ['add_animal', 'change_animal', 'delete_animal', 'change_adoptionrequest']
+        admin_permissions = ['add_animal', 'change_animal', 'delete_animal', 'change_adoptionrequest', 'view_financial_reports']
+
+        for perm in user_permissions:
+            permission = Permission.objects.get(codename=perm)
+            user_group.permissions.add(permission)
+
+        for perm in staff_permissions:
+            permission = Permission.objects.get(codename=perm)
+            staff_group.permissions.add(permission)
+
+        for perm in admin_permissions:
+            permission = Permission.objects.get(codename=perm)
+            admin_group.permissions.add(permission)
