@@ -1,5 +1,26 @@
 from rest_framework.permissions import BasePermission
 
+class IsUser(BasePermission):
+    """
+    Allows access only to regular users.
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == "user"
+
+class IsStaff(BasePermission):
+    """
+    Allows access only to shelter staff.
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == "staff"
+
+class IsAdmin(BasePermission):
+    """
+    Allows access only to admins.
+    """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == "admin"
+
 class IsAdminOrReadOnly(BasePermission):
     """
     Custom permission to allow only admins to delete animals.
