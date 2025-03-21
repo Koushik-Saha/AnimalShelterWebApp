@@ -2,8 +2,8 @@ import logging
 import stripe
 import paypalrestsdk
 from rest_framework.exceptions import ValidationError
-from .models import Animal, AdoptionRequest
-from .serializers import AnimalSerializer
+from .models import Animal, AdoptionRequest, Profile
+from .serializers import AnimalSerializer, ProfileSerializer
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -270,3 +270,11 @@ class AdoptionRequestDeleteView(generics.DestroyAPIView):
     queryset = AdoptionRequest.objects.all()
     serializer_class = AdoptionRequestSerializer
     permission_classes = [IsAuthenticated]
+
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
