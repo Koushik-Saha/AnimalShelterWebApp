@@ -12,9 +12,5 @@ class AdoptionRequestAdmin(admin.ModelAdmin):
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
     list_display = ('user', 'amount', 'status', 'created_at')
-
-@admin.register(Donation)
-class DonationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'amount', 'status', 'created_at')
     search_fields = ('user__username', 'transaction_id')
     list_filter = ('status',)

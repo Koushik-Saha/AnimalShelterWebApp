@@ -2,7 +2,7 @@ from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
-    ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView
+    ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -42,5 +42,7 @@ urlpatterns = [
     path('approve-adoption/<int:adoption_id>/', approve_adoption, name='approve_adoption'),
 
     path('admin-dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
+
+    path('donation-history/', DonationHistoryView.as_view(), name='donation-history'),
 
 ]

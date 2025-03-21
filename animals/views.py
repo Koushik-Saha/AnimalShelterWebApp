@@ -2,11 +2,10 @@ import logging
 import stripe
 import paypalrestsdk
 from rest_framework.views import APIView
-
 from . import models
 from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
-    NotificationSerializer
+    NotificationSerializer, DonationSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
@@ -366,3 +365,10 @@ class AdminDashboardView(APIView):
             "total_donations": total_donations,
         }
         return Response(data)
+
+class DonationHistoryView(generics.ListAPIView):
+    serializer_class = DonationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Donation.objects.filter(user=self.request.user)

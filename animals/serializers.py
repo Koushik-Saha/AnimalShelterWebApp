@@ -2,6 +2,11 @@ from rest_framework import serializers
 from .models import Animal, AdoptionRequest, Profile, FinancialReport, Notification
 
 
+class DonationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinancialReport
+        fields = "__all__"
+
 class FinancialReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancialReport
