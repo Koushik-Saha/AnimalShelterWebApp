@@ -1,6 +1,7 @@
 import logging
 import stripe
 import paypalrestsdk
+from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
@@ -177,6 +178,7 @@ def login_user(request):
     return Response({"token": token.key}, status=status.HTTP_200_OK)
 
 
+
 def approve_adoption(request, adoption_id):
     try:
         adoption = AdoptionRequest.objects.get(id=adoption_id, status="Pending")
@@ -193,6 +195,13 @@ def approve_adoption(request, adoption_id):
 
     except AdoptionRequest.DoesNotExist:
         return Response({"error": "Adoption request not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+
+def get_cached_donation_total():
+    donation_sum = cache.get("total_donations")
+    if not donation_sum:
+        donation_sum = Donation.objects.filter(status='Completed').aggregate(Sum('amount'))['amount__sum'] or 0
+        cache.set("total_donations", donation_sum, timeout=60 * 5)  # 5 mins
+    return donation_sum
 
 
 # List and Create Animals
