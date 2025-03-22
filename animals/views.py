@@ -3,7 +3,7 @@ import stripe
 import paypalrestsdk
 from rest_framework.views import APIView
 from . import models
-from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification
+from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification, Subscription
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
     NotificationSerializer, DonationSerializer
 from rest_framework.authtoken.models import Token
@@ -372,3 +372,37 @@ class DonationHistoryView(generics.ListAPIView):
 
     def get_queryset(self):
         return Donation.objects.filter(user=self.request.user)
+
+
+class CreateSubscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        email = user.email
+        price_id = request.data.get("price_id")
+
+        # Create a Stripe customer if needed
+        customer = stripe.Customer.create(email=email)
+
+        # Create subscription
+        subscription = stripe.Subscription.create(
+            customer=customer.id,
+            items=[{"price": price_id}],
+            payment_behavior="default_incomplete",
+            expand=["latest_invoice.payment_intent"],
+        )
+
+        # Save in database
+        Subscription.objects.create(
+            user=user,
+            stripe_customer_id=customer.id,
+            stripe_subscription_id=subscription.id,
+            amount=subscription['plan']['amount'] / 100,
+            status=subscription['status']
+        )
+
+        return Response({
+            "subscriptionId": subscription.id,
+            "clientSecret": subscription.latest_invoice.payment_intent.client_secret
+        })
