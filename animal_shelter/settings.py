@@ -164,6 +164,8 @@ CACHES = {
     }
 }
 
+THROTTLE_CACHE = 'default'
+
 # Load environment variables from .env file
 load_dotenv()
 
