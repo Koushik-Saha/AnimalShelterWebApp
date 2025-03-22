@@ -2,7 +2,8 @@ from django.urls import path
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
-    ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView
+    ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
+    CreateSubscriptionView
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -44,5 +45,6 @@ urlpatterns = [
     path('admin-dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
     # Donation history
     path('donation-history/', DonationHistoryView.as_view(), name='donation-history'),
-
+    # Subscription for monthly
+    path('subscribe/', CreateSubscriptionView.as_view(), name='create-subscription'),
 ]
