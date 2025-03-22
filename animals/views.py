@@ -16,7 +16,7 @@ from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly, IsUser, IsStaff, IsAdmin
 from .models import Donation
 from django.conf import settings
-from .utils import send_email, send_adoption_email
+from .utils import send_email, send_adoption_email, send_donation_receipt
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
@@ -406,3 +406,38 @@ class CreateSubscriptionView(APIView):
             "subscriptionId": subscription.id,
             "clientSecret": subscription.latest_invoice.payment_intent.client_secret
         })
+
+class StripeWebhookView(APIView):
+    def post(self, request):
+        payload = request.body
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except stripe.error.SignatureVerificationError:
+            return Response(status=400)
+
+        if event['type'] == 'invoice.paid':
+            data = event['data']['object']
+            customer_id = data['customer']
+            amount_paid = data['amount_paid'] / 100
+            transaction_id = data['id']
+
+            # Optional: get email and user if you track Stripe customer <-> User
+            customer = stripe.Customer.retrieve(customer_id)
+            email = customer['email']
+
+            send_donation_receipt(email, amount_paid, transaction_id)
+
+            # Save in DB
+            Donation.objects.create(
+                user=None,  # or find from customer.email
+                amount=amount_paid,
+                transaction_id=transaction_id,
+                status='Completed'
+            )
+
+        return Response(status=200)
