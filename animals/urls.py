@@ -3,7 +3,7 @@ from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView,
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
     ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
-    CreateSubscriptionView
+    CreateSubscriptionView, StripeWebhookView
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 
@@ -47,4 +47,6 @@ urlpatterns = [
     path('donation-history/', DonationHistoryView.as_view(), name='donation-history'),
     # Subscription for monthly
     path('subscribe/', CreateSubscriptionView.as_view(), name='create-subscription'),
+    # Add Webhook Endpoint
+    path('webhook/stripe/', StripeWebhookView.as_view(), name='stripe-webhook'),
 ]
