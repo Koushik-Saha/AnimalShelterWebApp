@@ -53,10 +53,11 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '10/minute',  # 10 requests per minute per user
+        'user': '100/day',  # Authenticated users: 100 requests/day
+        'anon': '10/hour',
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,  # Show 10 results per page
+    'PAGE_SIZE': 10,  # Show 10 results per page,
 }
 
 MIDDLEWARE = [
