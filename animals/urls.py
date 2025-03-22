@@ -37,12 +37,12 @@ urlpatterns = [
     path('animals/', AnimalListView.as_view(), name='list-animals'),
     path('manage-animal/<int:pk>/', ManageAnimalView.as_view(), name='manage-animal'),
     path('financial-reports/', FinancialReportsView.as_view(), name='financial-reports'),
-
+    # Notification system
     path('notifications/', NotificationListView.as_view(), name='notifications'),
     path('approve-adoption/<int:adoption_id>/', approve_adoption, name='approve_adoption'),
-
+    #admin dashboard details
     path('admin-dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
-
+    # Donation history
     path('donation-history/', DonationHistoryView.as_view(), name='donation-history'),
 
 ]
