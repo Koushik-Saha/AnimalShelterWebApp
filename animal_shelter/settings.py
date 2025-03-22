@@ -60,6 +60,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,  # Show 10 results per page,
 }
 
+REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']['donation'] = '3/min'
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
