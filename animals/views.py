@@ -1,6 +1,8 @@
 import logging
 import stripe
 import paypalrestsdk
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from . import models
 from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification, Subscription
@@ -222,6 +224,7 @@ class AnimalDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
 
+@method_decorator(cache_page(60 * 5), name='dispatch')  # Cache for 5 minutes
 class PublicAnimalListView(generics.ListAPIView):
     queryset = Animal.objects.filter(status="available")
     serializer_class = AnimalSerializer
