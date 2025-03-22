@@ -6,6 +6,11 @@ from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView,
     CreateSubscriptionView, StripeWebhookView
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 
 
 urlpatterns = [
@@ -49,4 +54,7 @@ urlpatterns = [
     path('subscribe/', CreateSubscriptionView.as_view(), name='create-subscription'),
     # Add Webhook Endpoint
     path('webhook/stripe/', StripeWebhookView.as_view(), name='stripe-webhook'),
+    # JWT Token
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
