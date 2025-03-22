@@ -24,3 +24,14 @@ def send_adoption_email(user_email, animal_name, status):
     subject = f"Adoption Request Update: {animal_name}"
     message = f"Your adoption request for {animal_name} has been {status}."
     send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email])
+
+def send_donation_receipt(user_email, amount, transaction_id):
+    subject = 'Thank You for Your Donation!'
+    message = (
+        f'Dear Donor,\n\n'
+        f'Thank you for your generous donation of ${amount}.\n'
+        f'Transaction ID: {transaction_id}\n\n'
+        f'We appreciate your support!\n\n'
+        f'- Animal Shelter Team'
+    )
+    send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email])
