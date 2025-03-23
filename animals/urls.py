@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .analytics.analytics_views import AdoptionSuccessAnalyticsView
+from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
@@ -61,5 +61,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # Adoption success analytics
     path("analytics/adoption-success/", AdoptionSuccessAnalyticsView.as_view(), name="adoption-success-analytics"),
+    # Donation trend analytics
+    path("analytics/donations/", DonationTrendAnalyticsView.as_view(), name="donation-trend-analytics"),
 
 ]
