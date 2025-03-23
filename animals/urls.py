@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .analytics.analytics_views import AdoptionSuccessAnalyticsView
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
@@ -57,4 +59,7 @@ urlpatterns = [
     # JWT Token
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # Adoption success analytics
+    path("analytics/adoption-success/", AdoptionSuccessAnalyticsView.as_view(), name="adoption-success-analytics"),
+
 ]
