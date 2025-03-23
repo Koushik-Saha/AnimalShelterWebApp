@@ -29,7 +29,8 @@ from django.contrib.auth.models import Group
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 logger = logging.getLogger(__name__)
@@ -138,45 +139,112 @@ def create_stripe_payment(request):
 def register_user(request):
     """
     API to register new users and assign them a role.
+    Required: username, email, password
+    Optional: role (defaults to 'user')
     """
     username = request.data.get('username')
+    email = request.data.get('email')
     password = request.data.get('password')
-    role = request.data.get('role', 'user')  # Default role is 'user'
+    role = request.data.get('role', 'user')
 
-    if not username or not password:
-        return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+    missing_fields = []
+    if not username:
+        missing_fields.append("username")
+    if not email:
+        missing_fields.append("email")
+    if not password:
+        missing_fields.append("password")
 
+    if missing_fields:
+        return Response({
+            "error": f"The following field(s) are required: {', '.join(missing_fields)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # Validate email format
+    try:
+        validate_email(email)
+    except ValidationError:
+        return Response({"error": "Invalid email format."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check for existing user/email
     if CustomUser.objects.filter(username=username).exists():
-        return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = CustomUser.objects.create_user(username=username, password=password, role=role)
+    if CustomUser.objects.filter(email=email).exists():
+        return Response({"error": "Email already registered."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Assign user to the correct group
-    if role == 'staff':
-        group = Group.objects.get(name="Shelter Staff")
-    elif role == 'admin':
-        group = Group.objects.get(name="Admin")
-    else:
-        group = Group.objects.get(name="User")
+    # Create the user
+    user = CustomUser.objects.create_user(username=username, email=email, password=password, role=role)
 
+    # Assign role and flags
+    try:
+        if role == 'staff':
+            user.is_staff = True
+            group = Group.objects.get(name="Shelter Staff")
+        elif role == 'admin':
+            user.is_staff = True
+            user.is_superuser = True
+            group = Group.objects.get(name="Admin")
+        else:
+            group = Group.objects.get(name="User")
+    except Group.DoesNotExist:
+        return Response({
+            "error": f"Group '{role}' does not exist. Please create the group first."
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    user.save()
     user.groups.add(group)
-    return Response({"message": "User registered successfully!", "role": role}, status=status.HTTP_201_CREATED)
+
+    return Response({
+        "message": "User registered successfully!",
+        "username": user.username,
+        "email": user.email,
+        "role": role
+    }, status=status.HTTP_201_CREATED)
+
+
 
 # Login and Get Token
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
-    """Endpoint for staff login and token retrieval"""
+    """
+    Endpoint for staff login and token retrieval.
+    Only staff users can log in through this endpoint.
+    """
     username = request.data.get('username')
     password = request.data.get('password')
 
+    missing_fields = []
+    if not username:
+        missing_fields.append("username")
+    if not password:
+        missing_fields.append("password")
+
+    if missing_fields:
+        return Response({
+            "error": f"The following field(s) are required: {', '.join(missing_fields)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     user = authenticate(username=username, password=password)
 
-    if user is None or not user.is_staff:
-        return Response({"error": "Invalid credentials or not a staff user."}, status=status.HTTP_400_BAD_REQUEST)
+    if user is None:
+        return Response({
+            "error": "Invalid username or password."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    if not user.is_staff:
+        return Response({
+            "error": "Access denied. Only staff users are allowed to log in here."
+        }, status=status.HTTP_403_FORBIDDEN)
 
     token, created = Token.objects.get_or_create(user=user)
-    return Response({"token": token.key}, status=status.HTTP_200_OK)
+    return Response({
+        "token": token.key,
+        "message": "Login successful.",
+        "username": user.username,
+        "role": user.role if hasattr(user, 'role') else "staff"
+    }, status=status.HTTP_200_OK)
 
 
 
