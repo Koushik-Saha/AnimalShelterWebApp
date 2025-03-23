@@ -68,5 +68,7 @@ urlpatterns = [
     path("analytics/donations/export/", DonationCSVExportView.as_view(), name="donation-csv-export"),
     # Admin custom report
     path("analytics/custom-report/", AdminCustomReportView.as_view(), name="custom-report"),
+    # Animal Match Suggestion
+    path("match-animals/", AnimalMatchSuggestionView.as_view(), name="animal-match"),
 
 ]
