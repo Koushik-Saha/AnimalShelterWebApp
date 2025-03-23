@@ -1,5 +1,7 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Animal, AdoptionRequest, Profile, FinancialReport, Notification
+from django.conf import settings
 
 
 class DonationSerializer(serializers.ModelSerializer):
@@ -65,3 +67,11 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+
+User = settings.AUTH_USER_MODEL
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'role', 'is_staff', 'is_superuser', 'date_joined']

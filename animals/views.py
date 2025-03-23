@@ -9,11 +9,11 @@ from rest_framework.views import APIView
 from . import models
 from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification, Subscription
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
-    NotificationSerializer, DonationSerializer
+    NotificationSerializer, DonationSerializer, UserDetailSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
-from rest_framework.permissions import AllowAny
-from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny, IsAdminUser
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, filters
@@ -36,6 +36,8 @@ from django.core.exceptions import ValidationError
 logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+User = settings.AUTH_USER_MODEL
 
 
 @api_view(["POST"])
@@ -202,8 +204,6 @@ def register_user(request):
         "role": role
     }, status=status.HTTP_201_CREATED)
 
-
-
 # Login and Get Token
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -246,7 +246,25 @@ def login_user(request):
         "role": user.role if hasattr(user, 'role') else "staff"
     }, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_users(request):
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to view users."}, status=403)
 
+    users = CustomUser.objects.all()
+    data = [
+        {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "is_staff": user.is_staff,
+            "is_superuser": user.is_superuser,
+        }
+        for user in users
+    ]
+    return Response(data)
 
 def approve_adoption(request, adoption_id):
     try:

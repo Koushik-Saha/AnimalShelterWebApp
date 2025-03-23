@@ -8,7 +8,7 @@ from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView,
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
     ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
-    CreateSubscriptionView, StripeWebhookView
+    CreateSubscriptionView, StripeWebhookView, list_users
 from .views import register_user, login_user
 from .views import create_stripe_payment, create_paypal_payment
 from rest_framework_simplejwt.views import (
@@ -76,5 +76,7 @@ urlpatterns = [
     path("adoption-requests/<int:pk>/approve/", ApproveAdoptionRequestView.as_view(), name="approve-adoption"),
     # Ranked adoption candidates
     path("animals/<int:pk>/rank-candidates/", RankedAdoptionCandidatesView.as_view(), name="rank-candidates"),
+    # Get all the user
+    path('users/', list_users, name='list-users'),
 
 ]
