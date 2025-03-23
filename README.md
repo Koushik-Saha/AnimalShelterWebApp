@@ -97,5 +97,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🤝 Contributors
 
-- [Koushik Saha](https://github.com/your-profile) — Developer
+- [Koushik Saha](https://github.com/Koushik-Saha) — Developer
 - [Animal Shelter Volunteer Team] — Design & Feedback
