@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.db.models import Count, Sum
-from animals.models import AdoptionRequest, Donation, Animal
 from django.utils.dateparse import parse_date
+from animals.models import AdoptionRequest, Donation
 
 
 class AdminCustomReportView(APIView):
