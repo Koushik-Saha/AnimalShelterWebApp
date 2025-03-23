@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .ml.matcher import suggest_animals
-from .models import Animal
-from .serializers import AnimalSerializer
+from .matcher import suggest_animals
+from ..models import Animal
+from ..serializers import AnimalSerializer
+
 
 class AnimalMatchSuggestionView(APIView):
     permission_classes = [IsAuthenticated]
