@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .admins.admin_views import AdminCustomReportView
+from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
 from .ml.ml_views import AnimalMatchSuggestionView
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
@@ -71,5 +72,7 @@ urlpatterns = [
     path("analytics/custom-report/", AdminCustomReportView.as_view(), name="custom-report"),
     # Animal Match Suggestion
     path("match-animals/", AnimalMatchSuggestionView.as_view(), name="animal-match"),
+
+    path("adoption-requests/<int:pk>/approve/", ApproveAdoptionRequestView.as_view(), name="approve-adoption"),
 
 ]
