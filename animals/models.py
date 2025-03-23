@@ -16,6 +16,12 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     home_verification_document = models.FileField(upload_to='home_verifications/', blank=True, null=True)
 
+    adoption_success_count = models.IntegerField(default=0)  # ✅
+    home_type = models.CharField(max_length=100, blank=True)  # Apartment, House
+    pet_experience = models.BooleanField(default=False)
+    has_yard = models.BooleanField(default=False)
+    is_profile_complete = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.user.username}'s Profile"
 
