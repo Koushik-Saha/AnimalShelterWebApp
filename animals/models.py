@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 User = settings.AUTH_USER_MODEL
 
@@ -65,9 +66,9 @@ class Donation(models.Model):
 
 class Animal(models.Model):
     STATUS_CHOICES = [
-        ('available', 'Available for Adoption'),
-        ('adopted', 'Adopted'),
-        ('pending', 'Pending Adoption'),
+        ('available', _('Available for Adoption')),
+        ('adopted', _('Adopted')),
+        ('pending', _('Pending Adoption')),
     ]
 
     name = models.CharField(max_length=100)
