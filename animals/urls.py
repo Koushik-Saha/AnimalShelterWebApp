@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView
+from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
@@ -63,5 +63,7 @@ urlpatterns = [
     path("analytics/adoption-success/", AdoptionSuccessAnalyticsView.as_view(), name="adoption-success-analytics"),
     # Donation trend analytics
     path("analytics/donations/", DonationTrendAnalyticsView.as_view(), name="donation-trend-analytics"),
+    # Donation CSV export
+    path("analytics/donations/export/", DonationCSVExportView.as_view(), name="donation-csv-export"),
 
 ]
