@@ -3,7 +3,7 @@ from django.urls import path
 from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
-from .ml.ml_views import AnimalMatchSuggestionView
+from .ml.ml_views import AnimalMatchSuggestionView, RankedAdoptionCandidatesView
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
@@ -72,7 +72,9 @@ urlpatterns = [
     path("analytics/custom-report/", AdminCustomReportView.as_view(), name="custom-report"),
     # Animal Match Suggestion
     path("match-animals/", AnimalMatchSuggestionView.as_view(), name="animal-match"),
-
+    # Approve adoption request
     path("adoption-requests/<int:pk>/approve/", ApproveAdoptionRequestView.as_view(), name="approve-adoption"),
+    # Ranked adoption candidates
+    path("animals/<int:pk>/rank-candidates/", RankedAdoptionCandidatesView.as_view(), name="rank-candidates"),
 
 ]
