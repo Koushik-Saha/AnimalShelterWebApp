@@ -15,6 +15,8 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.urls import path, include
+
 
 
 
@@ -78,5 +80,7 @@ urlpatterns = [
     path("animals/<int:pk>/rank-candidates/", RankedAdoptionCandidatesView.as_view(), name="rank-candidates"),
     # Get all the user
     path('users/', list_users, name='list-users'),
+
+    path("animalintakemanagement/", include("animals.animalintakemanagement.urls")),
 
 ]
