@@ -7,7 +7,7 @@ class AnimalIntakeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimalIntake
         fields = '__all__'
-        read_only_fields = ['animal_id']
+        read_only_fields = ['animal_id', 'created_by', 'created_at']
 
     def validate(self, data):
         if not data.get("animal_id"):
