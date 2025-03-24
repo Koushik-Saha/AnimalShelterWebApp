@@ -37,6 +37,8 @@ class AnimalIntake(models.Model):
     photos = models.ImageField(upload_to='animal_photos/', null=True, blank=True)
     videos = models.FileField(upload_to='animal_videos/', null=True, blank=True)
 
+    stay_history = models.JSONField(default=list, null=True, blank=True)
+
     def save(self, *args, **kwargs):
         if not self.animal_id:
             self.animal_id = f"A-{uuid.uuid4().hex[:8].upper()}"
