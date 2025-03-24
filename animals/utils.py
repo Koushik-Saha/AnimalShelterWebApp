@@ -11,7 +11,7 @@ def send_donation_email(user_email, amount):
         fail_silently=False,
     )
 
-def send_email(to_email, subject, message):
+def send_email_func(to_email, subject, message):
     send_mail(
         subject,
         message,

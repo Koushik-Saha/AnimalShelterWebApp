@@ -19,7 +19,7 @@ from rest_framework import generics, filters
 from .permissions import IsAdminOrReadOnly, IsUser, IsStaff, IsAdmin
 from .models import Donation
 from django.conf import settings
-from .utils import send_email, send_adoption_email, send_donation_receipt
+from .utils import send_email_func, send_adoption_email, send_donation_receipt
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
@@ -91,7 +91,7 @@ def create_paypal_payment(request):
         })
 
         # Send email confirmation
-        send_email(
+        send_email_func(
             to_email=request.user.email,
             subject="Donation Received",
             message=f"Thank you for donating ${amount} to our shelter!",
@@ -108,7 +108,6 @@ def create_paypal_payment(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def process_stripe_donation(request):
-    print("REQUEST ✅:", request)
     try:
         amount = request.data.get("amount")
         if not amount:
@@ -130,7 +129,7 @@ def process_stripe_donation(request):
         )
 
         # Send email confirmation
-        send_email(
+        send_email_func(
             to_email=request.user.email,
             subject="Donation Received",
             message=f"Thank you for donating ${amount} to our shelter!",
