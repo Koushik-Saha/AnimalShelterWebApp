@@ -31,6 +31,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 
 logger = logging.getLogger(__name__)
@@ -357,21 +359,45 @@ class AdoptionRequestCreateView(generics.CreateAPIView):
         user = self.request.user
         animal = serializer.validated_data.get('animal')
 
-        # Check if the animal exists
+        # 🔐 Check if animal is provided
+        if animal is None:
+            raise serializers.ValidationError({"error": "Animal ID is missing or invalid."})
+
+        # 🔍 Check if the animal exists
         if not Animal.objects.filter(id=animal.id).exists():
-            return Response({"error": "Invalid animal ID. This animal does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError({"error": "Invalid animal ID. This animal does not exist."})
 
-        # Check if the animal is available for adoption
+        # ⛔ Check adoption availability
         if animal.status != 'available':
-            return Response({"error": "This animal is no longer available for adoption."}, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError({"error": "This animal is no longer available for adoption."})
 
-        # Check if the user already requested adoption for this animal
+        # 🛑 Prevent duplicate request
         if AdoptionRequest.objects.filter(user=user, animal=animal).exists():
             logger.warning(f"User {user.username} attempted duplicate adoption request for {animal.name}.")
-            return Response({"error": "You have already requested adoption for this animal."}, status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError({"error": "You have already requested adoption for this animal."})
 
         # Save the adoption request with the logged-in user
         serializer.save(user=user, status="Pending")
+
+        # Email to user
+        send_mail(
+            subject='Adoption Request Received',
+            message=f"Hi {user.username}, your adoption request for {animal.name} has been received!",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=True,
+        )
+
+        # Email to admins
+        admin_emails = User.objects.filter(is_superuser=True).values_list('email', flat=True)
+        send_mail(
+            subject='New Adoption Request',
+            message=f"{user.username} has submitted an adoption request for {animal.name}.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=admin_emails,
+            fail_silently=True,
+        )
+
         logger.info(f"Adoption Request submitted by {user.username} for {animal.name}.")
 
         return Response({"message": "Adoption request submitted successfully!", "data": serializer.data}, status=status.HTTP_201_CREATED)

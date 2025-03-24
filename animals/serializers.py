@@ -48,8 +48,8 @@ class AnimalSerializer(serializers.ModelSerializer):
 class AdoptionRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdoptionRequest
-        fields = ['id', 'user', 'animal', 'status']  # add any other fields you need
-        read_only_fields = ['user', 'status', 'animal', 'requested_at']
+        fields = ['id', 'user', 'animal', 'status', 'created_at']
+        read_only_fields = ['user', 'status', 'created_at']
 
     def validate(self, data):
         """
