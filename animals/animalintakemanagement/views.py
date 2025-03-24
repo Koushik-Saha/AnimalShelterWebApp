@@ -4,13 +4,14 @@ from rest_framework.permissions import IsAuthenticated
 from .models import AnimalIntake
 from .serializers import AnimalIntakeSerializer
 from .permissions import IsStaffOrAdmin  # custom permission if needed
+from ..permissions import IsStaff
 
 
 # ✅ Create & List
 class AnimalIntakeListCreateView(generics.ListCreateAPIView):
     queryset = AnimalIntake.objects.all()
     serializer_class = AnimalIntakeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStaff]
 
     def perform_create(self, serializer):
         if serializer.is_valid():
@@ -55,3 +56,15 @@ class AnimalIntakeDeleteView(generics.DestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response({"message": "Animal intake record deleted successfully"}, status=204)
+
+
+class AnimalIntakeListView(generics.ListAPIView):
+    serializer_class = AnimalIntakeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        source = self.request.query_params.get('source')
+        queryset = AnimalIntake.objects.all()
+        if source:
+            queryset = queryset.filter(source=source)
+        return queryset
