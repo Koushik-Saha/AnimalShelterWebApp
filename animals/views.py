@@ -336,7 +336,7 @@ class FilteredAnimalListView(generics.ListAPIView):
 
 # List all adoption requests (only for staff)
 class AdoptionRequestListView(generics.ListAPIView):
-    queryset = AdoptionRequest.objects.all()
+    queryset = AdoptionRequest.objects.all().order_by('id')  # or 'id' or any field
     serializer_class = AdoptionRequestSerializer
     permission_classes = [IsAuthenticated]
 
