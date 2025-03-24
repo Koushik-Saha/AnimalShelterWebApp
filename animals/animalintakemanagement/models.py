@@ -15,7 +15,7 @@ class AnimalIntake(models.Model):
 
     SEX_CHOICES = [('male', 'Male'), ('female', 'Female'), ('unknown', 'Unknown')]
 
-    animal_id = models.CharField(max_length=12, unique=True)
+    # animal_id = models.CharField(max_length=12, unique=True)
     species = models.CharField(max_length=50)
     breed = models.CharField(max_length=50)
     age = models.DecimalField(max_digits=4, decimal_places=1)
@@ -31,12 +31,10 @@ class AnimalIntake(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.animal_id} - {self.species}"
-
-class AnimalIntake(models.Model):
     animal_id = models.CharField(max_length=20, unique=True, editable=False)
-    # ... other existing fields ...
+
+    photos = models.ImageField(upload_to='animal_photos/', null=True, blank=True)
+    videos = models.FileField(upload_to='animal_videos/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.animal_id:
