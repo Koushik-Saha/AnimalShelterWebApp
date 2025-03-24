@@ -61,8 +61,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '100/day',  # Authenticated users: 100 requests/day
-        'anon': '10/hour',
+        'user': '1000/minute',
+        'anon': '1000/minute',
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,  # Show 10 results per page,
