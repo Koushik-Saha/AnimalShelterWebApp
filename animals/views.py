@@ -2,7 +2,6 @@ import logging
 import stripe
 import paypalrestsdk
 from django.core.cache import cache
-from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
@@ -33,6 +32,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.db.models import Sum
 
 
 logger = logging.getLogger(__name__)
@@ -483,7 +483,7 @@ class AdminDashboardView(APIView):
     def get(self, request):
         total_animals = Animal.objects.count()
         total_adoptions = AdoptionRequest.objects.filter(status="Approved").count()
-        total_donations = Donation.objects.aggregate(total=models.Sum("amount"))["total"] or 0
+        total_donations = Donation.objects.aggregate(total=Sum("amount"))["total"] or 0
 
         data = {
             "total_animals": total_animals,
