@@ -23,7 +23,7 @@ class AnimalIntake(models.Model):
     health_status = models.TextField()
     temperament = models.CharField(max_length=100)
     history = models.TextField(blank=True, null=True)
-    source = models.CharField(max_length=20, choices=SOURCE_CHOICES)
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES)
     photo = models.ImageField(upload_to="intakes/photos/", blank=True, null=True)
     video = models.FileField(upload_to="intakes/videos/", blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
