@@ -1,3 +1,4 @@
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,8 @@ from animals.permissions import IsStaff, IsAdmin
 class AnimalIntakeListCreateView(generics.ListCreateAPIView):
     queryset = AnimalIntake.objects.all()
     serializer_class = AnimalIntakeSerializer
-    permission_classes = [IsAuthenticated, IsAdmin, IsStaff]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
         if serializer.is_valid():
