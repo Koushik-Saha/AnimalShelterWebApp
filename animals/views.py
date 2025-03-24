@@ -296,7 +296,7 @@ def get_cached_donation_total():
 
 # List and Create Animals
 class AnimalListCreateView(generics.ListCreateAPIView):
-    queryset = Animal.objects.all()
+    queryset = Animal.objects.all().order_by('-created_at')
     serializer_class = AnimalSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
