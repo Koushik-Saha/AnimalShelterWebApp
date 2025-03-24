@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Animal, AdoptionRequest, Profile, FinancialReport, Notification
+from .models import Animal, AdoptionRequest, Profile, FinancialReport, NotificationList
 from django.conf import settings
 
 
@@ -66,7 +66,7 @@ class AdoptionRequestSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Notification
+        model = NotificationList
         fields = '__all__'
 
 

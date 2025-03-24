@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 from . import models
-from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, Notification, Subscription
+from .models import Animal, AdoptionRequest, Profile, CustomUser, FinancialReport, NotificationList, Subscription
 from .serializers import AnimalSerializer, ProfileSerializer, AdoptionHistorySerializer, FinancialReportSerializer, \
     NotificationSerializer, DonationSerializer, UserDetailSerializer
 from rest_framework.authtoken.models import Token
@@ -277,7 +277,7 @@ def approve_adoption(request, adoption_id):
         adoption.save()
 
         # Send Notification
-        Notification.objects.create(
+        NotificationList.objects.create(
             user=adoption.user,
             message=f"Your adoption request for {adoption.animal.name} has been approved!"
         )
@@ -475,7 +475,7 @@ class NotificationListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user, is_read=False)
+        return NotificationList.objects.filter(user=self.request.user, is_read=False)
 
 class AdminDashboardView(APIView):
     permission_classes = [IsAdmin]

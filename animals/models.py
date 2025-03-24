@@ -37,16 +37,6 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.role})"
 
-class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Notification for {self.user.username}: {self.message}"
-
-
 class Donation(models.Model):
     STATUS_PENDING = "Pending"
     STATUS_COMPLETED = "Completed"
@@ -167,3 +157,12 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.status}"
+
+class NotificationList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"NotificationList for {self.user.username}: {self.message}"
