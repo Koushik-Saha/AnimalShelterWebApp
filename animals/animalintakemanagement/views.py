@@ -1,7 +1,10 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 from .models import AnimalIntake
 from .serializers import AnimalIntakeSerializer
 from .permissions import IsStaffOrAdmin  # custom permission if needed
@@ -70,3 +73,21 @@ class AnimalIntakeListView(generics.ListAPIView):
         if source:
             queryset = queryset.filter(source=source)
         return queryset
+
+class AddStayHistoryView(APIView):
+    permission_classes = [IsAuthenticated, IsStaff]
+
+    def post(self, request, pk):
+        intake = get_object_or_404(AnimalIntake, pk=pk)
+        history_entry = {
+            "date": request.data.get("date"),
+            "reason": request.data.get("reason")
+        }
+
+        if not history_entry["date"] or not history_entry["reason"]:
+            return Response({"error": "Both date and reason are required."}, status=400)
+
+        intake.stay_history.append(history_entry)
+        intake.save()
+
+        return Response({"message": "Stay history updated successfully", "history": intake.stay_history}, status=200)
