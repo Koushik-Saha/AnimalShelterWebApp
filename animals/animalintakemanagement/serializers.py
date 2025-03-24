@@ -6,7 +6,11 @@ from .validators import validate_age
 class AnimalIntakeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimalIntake
-        exclude = ['created_by']
+        fields = '__all__'
 
-    def validate_age(self, value):
-        return validate_age(value)
+    def validate(self, data):
+        if not data.get("animal_id"):
+            raise serializers.ValidationError({"animal_id": "Animal ID is required."})
+        if not data.get("source"):
+            raise serializers.ValidationError({"source": "Please provide a valid source of intake."})
+        return data
