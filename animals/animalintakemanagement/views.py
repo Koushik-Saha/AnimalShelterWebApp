@@ -4,14 +4,14 @@ from rest_framework.permissions import IsAuthenticated
 from .models import AnimalIntake
 from .serializers import AnimalIntakeSerializer
 from .permissions import IsStaffOrAdmin  # custom permission if needed
-from ..permissions import IsStaff
+from animals.permissions import IsStaff, IsAdmin
 
 
 # ✅ Create & List
 class AnimalIntakeListCreateView(generics.ListCreateAPIView):
     queryset = AnimalIntake.objects.all()
     serializer_class = AnimalIntakeSerializer
-    permission_classes = [IsAuthenticated, IsStaff]
+    permission_classes = [IsAuthenticated, IsAdmin, IsStaff]
 
     def perform_create(self, serializer):
         if serializer.is_valid():
