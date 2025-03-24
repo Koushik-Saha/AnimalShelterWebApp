@@ -71,6 +71,18 @@ class Animal(models.Model):
         ('pending', _('Pending Adoption')),
     ]
 
+    FRIENDLY = 'Friendly'
+    AGGRESSIVE = 'Aggressive'
+    SHY = 'Shy'
+    PLAYFUL = 'Playful'
+
+    TEMPERAMENT_CHOICES = [
+        (FRIENDLY, 'Friendly'),
+        (AGGRESSIVE, 'Aggressive'),
+        (SHY, 'Shy'),
+        (PLAYFUL, 'Playful'),
+    ]
+
     name = models.CharField(max_length=100)
     species = models.CharField(max_length=50)  # e.g., Dog, Cat, Rabbit
     breed = models.CharField(max_length=100, blank=True, null=True)
@@ -80,6 +92,7 @@ class Animal(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    temperament = models.CharField(max_length=50, choices=TEMPERAMENT_CHOICES, default=FRIENDLY)
 
     def __str__(self):
         return f"{self.name} ({self.species}) - {self.get_status_display()}"
