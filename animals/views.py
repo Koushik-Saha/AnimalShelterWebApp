@@ -39,7 +39,8 @@ logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-User = settings.AUTH_USER_MODEL
+# User = settings.AUTH_USER_MODEL
+User = get_user_model()
 
 
 @api_view(["POST"])
@@ -299,8 +300,11 @@ class AnimalListCreateView(generics.ListCreateAPIView):
     serializer_class = AnimalSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'species', 'status']
+
+    # Add this
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['status']  # Enables ?status=available
+    search_fields = ['name', 'species', 'status']  # For ?search=Dog etc.
 
     def create(self, request, *args, **kwargs):
         # Check if the request contains a list of objects
@@ -359,13 +363,9 @@ class AdoptionRequestCreateView(generics.CreateAPIView):
         user = self.request.user
         animal = serializer.validated_data.get('animal')
 
-        # 🔐 Check if animal is provided
-        if animal is None:
+        # Validate animal ID
+        if not animal:
             raise serializers.ValidationError({"error": "Animal ID is missing or invalid."})
-
-        # 🔍 Check if the animal exists
-        if not Animal.objects.filter(id=animal.id).exists():
-            raise serializers.ValidationError({"error": "Invalid animal ID. This animal does not exist."})
 
         # ⛔ Check adoption availability
         if animal.status != 'available':
@@ -383,7 +383,7 @@ class AdoptionRequestCreateView(generics.CreateAPIView):
         send_mail(
             subject='Adoption Request Received',
             message=f"Hi {user.username}, your adoption request for {animal.name} has been received!",
-            from_email=settings.DEFAULT_FROM_EMAIL,
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
             fail_silently=True,
         )
@@ -393,7 +393,7 @@ class AdoptionRequestCreateView(generics.CreateAPIView):
         send_mail(
             subject='New Adoption Request',
             message=f"{user.username} has submitted an adoption request for {animal.name}.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=admin_emails,
             fail_silently=True,
         )
