@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Animal, AdoptionRequest, Profile, FinancialReport, NotificationList
+from .models import Animal, AdoptionRequest, Profile, FinancialReport, NotificationList, Donation
 from django.conf import settings
 
 
 class DonationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FinancialReport
+        model = Donation
         fields = "__all__"
 
 class FinancialReportSerializer(serializers.ModelSerializer):
