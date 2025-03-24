@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -31,3 +33,12 @@ class AnimalIntake(models.Model):
 
     def __str__(self):
         return f"{self.animal_id} - {self.species}"
+
+class AnimalIntake(models.Model):
+    animal_id = models.CharField(max_length=20, unique=True, editable=False)
+    # ... other existing fields ...
+
+    def save(self, *args, **kwargs):
+        if not self.animal_id:
+            self.animal_id = f"A-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
