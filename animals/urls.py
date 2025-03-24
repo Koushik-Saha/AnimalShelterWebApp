@@ -8,9 +8,9 @@ from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView,
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
     ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
-    CreateSubscriptionView, StripeWebhookView, list_users
+    CreateSubscriptionView, StripeWebhookView, list_users, process_stripe_donation
 from .views import register_user, login_user
-from .views import create_stripe_payment, create_paypal_payment
+from .views import create_paypal_payment
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -26,7 +26,7 @@ urlpatterns = [
     path('animals/', AnimalListCreateView.as_view(), name='animal-list'),
     path('animals/<int:pk>/', AnimalDetailView.as_view(), name='animal-detail'),
     # Payment
-    path("stripe-payment/", create_stripe_payment, name="stripe-payment"),
+    path('stripe-payment/', process_stripe_donation, name='process-stripe-donation'),
     path("paypal-payment/", create_paypal_payment, name="paypal-payment"),
     # Animal Public
     path('public-animals/', PublicAnimalListView.as_view(), name='public-animals'),

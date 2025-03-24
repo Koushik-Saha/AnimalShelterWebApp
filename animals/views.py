@@ -107,7 +107,8 @@ def create_paypal_payment(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def create_stripe_payment(request):
+def process_stripe_donation(request):
+    print("REQUEST ✅:", request)
     try:
         amount = request.data.get("amount")
         if not amount:
