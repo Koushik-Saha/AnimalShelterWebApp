@@ -4,13 +4,13 @@ from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
 from .ml.ml_views import AnimalMatchSuggestionView, RankedAdoptionCandidatesView
+from .payments.payments_views import process_stripe_donation, create_paypal_payment
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
     ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
-    CreateSubscriptionView, StripeWebhookView, list_users, process_stripe_donation
+    CreateSubscriptionView, StripeWebhookView, list_users
 from .views import register_user, login_user
-from .views import create_paypal_payment
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
