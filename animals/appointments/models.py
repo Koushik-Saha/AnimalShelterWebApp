@@ -7,6 +7,7 @@ class Appointment(models.Model):
         ('scheduled', 'Scheduled'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
+        ('rescheduled', 'rescheduled'),
     ]
 
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
