@@ -80,9 +80,11 @@ urlpatterns = [
     path("animals/<int:pk>/rank-candidates/", RankedAdoptionCandidatesView.as_view(), name="rank-candidates"),
     # Get all the user
     path('users/', list_users, name='list-users'),
-
+    # Animal Intake & Management
     path("animalintakemanagement/", include("animals.animalintakemanagement.urls")),
-
+    # Medical Care Rec CRUD
     path('medicalcare/', include('animals.medicalcare.urls')),
+    # Appointments CRUD
+    path('appointments/', include('animals.appointments.urls')),
 
 ]
