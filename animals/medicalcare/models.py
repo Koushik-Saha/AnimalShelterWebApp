@@ -3,10 +3,10 @@ from django.conf import settings
 
 class MedicalRecord(models.Model):
     VACCINE_CHOICES = [
-        ('rabies', 'Rabies'),
-        ('distemper', 'Distemper'),
-        ('parvo', 'Parvovirus'),
-        ('bordetella', 'Bordetella'),
+        ('Rabies', 'Rabies'),
+        ('Distemper', 'Distemper'),
+        ('Parvovirus', 'Parvovirus'),
+        ('Bordetella', 'Bordetella'),
     ]
 
     animal_id = models.CharField(max_length=20)
