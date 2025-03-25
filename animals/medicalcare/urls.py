@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import MedicalRecordCreateView, MedicalRecordListView, MedicalRecordDetailView, MedicalRecordUpdateView, \
-    MedicalRecordDeleteView
+    MedicalRecordDeleteView, HealthStatusUpdateCreateView, HealthStatusUpdateListView
 
 urlpatterns = [
     path('create/', MedicalRecordCreateView.as_view(), name='medical-create'),
@@ -8,4 +8,7 @@ urlpatterns = [
     path('<int:pk>/', MedicalRecordDetailView.as_view(), name='medical-detail'),
     path('<int:pk>/update/', MedicalRecordUpdateView.as_view(), name='medical-update'),
     path('<int:pk>/delete/', MedicalRecordDeleteView.as_view(), name='medical-delete'),
+
+    path('create/', HealthStatusUpdateCreateView.as_view(), name='health-status-create'),
+    path('<int:animal_id>/updates/', HealthStatusUpdateListView.as_view(), name='health-status-list'),
 ]
