@@ -32,3 +32,7 @@ class IsAdminOrReadOnly(BasePermission):
             return True
         # Only staff users can modify (POST, PUT, DELETE)
         return request.user and request.user.is_staff
+
+class IsStaffOrAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)
