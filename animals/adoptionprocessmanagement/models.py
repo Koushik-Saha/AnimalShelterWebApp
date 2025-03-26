@@ -73,6 +73,9 @@ class AdoptionApplication(models.Model):
     agreement_text = models.TextField(blank=True, null=True)
     agreement_pdf = models.FileField(upload_to="adoption_agreements/", blank=True, null=True)
 
+    def __str__(self):
+        return f"Adoption Application by {self.full_name}"
+
     def generate_agreement_pdf(self):
         buffer = BytesIO()
         p = canvas.Canvas(buffer)
@@ -87,9 +90,6 @@ class AdoptionApplication(models.Model):
 
         buffer.seek(0)
         return ContentFile(buffer.read(), name=f"{self.full_name}_agreement.pdf")
-
-    def __str__(self):
-        return f"Adoption Application by {self.full_name}"
 
 
 class MatchingTool(models.Model):
