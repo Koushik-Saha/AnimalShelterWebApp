@@ -1,9 +1,10 @@
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer, MatchingToolSerializer
+from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer, MatchingToolSerializer, \
+    AdoptionAgreementSerializer
 from .models import AdoptionApplication, MatchingTool
-from ..permissions import IsAdminOrShelterStaff
+from ..permissions import IsAdminOrShelterStaff, IsAdmin
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -88,3 +89,8 @@ class MatchingToolByUserView(generics.RetrieveAPIView):
 
     def get_object(self):
         return MatchingTool.objects.get(adopter=self.request.user)
+
+class AdoptionAgreementGenerateView(generics.UpdateAPIView):
+    queryset = AdoptionApplication.objects.all()
+    serializer_class = AdoptionAgreementSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
