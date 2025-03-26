@@ -3,8 +3,8 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer, MatchingToolSerializer, \
-    AdoptionAgreementSerializer
-from .models import AdoptionApplication, MatchingTool, AdoptionAgreement
+    AdoptionAgreementSerializer, PostAdoptionFollowUpSerializer
+from .models import AdoptionApplication, MatchingTool, AdoptionAgreement, PostAdoptionFollowUp
 from ..models import Animal
 from ..permissions import IsAdminOrShelterStaff, IsAdmin
 from rest_framework.response import Response
@@ -125,3 +125,17 @@ class AdoptionAgreementGenerateView(generics.UpdateAPIView):
             "message": "Adoption agreement generated successfully",
             "pdf_url": agreement.pdf_file.url if agreement.pdf_file else None
         }, status=201)
+
+
+class PostAdoptionFollowUpListCreateView(generics.ListCreateAPIView):
+    queryset = PostAdoptionFollowUp.objects.all()
+    serializer_class = PostAdoptionFollowUpSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrShelterStaff]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class PostAdoptionFollowUpDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PostAdoptionFollowUp.objects.all()
+    serializer_class = PostAdoptionFollowUpSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrShelterStaff]
