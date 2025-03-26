@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AdoptionApplication, MatchingTool
+from .models import AdoptionApplication, MatchingTool, AdoptionAgreement
 
 
 class AdoptionApplicationSerializer(serializers.ModelSerializer):
@@ -37,3 +37,8 @@ class AdoptionAgreementSerializer(serializers.ModelSerializer):
         instance.agreement_pdf.save(pdf_file.name, pdf_file, save=True)
         instance.save()
         return instance
+
+class AdoptionAgreementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdoptionAgreement
+        fields = '__all__'

@@ -27,8 +27,10 @@ class AdoptionApplication(models.Model):
         ('rejected', 'Rejected'),
     ]
 
+
     # Applicant Information
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, null=True, blank=True)  # Add null and blank
     full_name = models.CharField(max_length=100)
     address = models.TextField()
     phone_number = models.CharField(max_length=15)
@@ -133,10 +135,12 @@ class AdoptionAgreement(models.Model):
         p.save()
 
         buffer.seek(0)
-        # Save to FileField
+
+        # ✅ Save the PDF to the FileField
         self.pdf_file.save(
             f"{self.user.username}_{self.animal.name}_agreement.pdf",
-            ContentFile(buffer.read())
+            ContentFile(buffer.read()),
+            save=True  # ✅ This will persist it immediately
         )
+
         buffer.close()
-        self.save()

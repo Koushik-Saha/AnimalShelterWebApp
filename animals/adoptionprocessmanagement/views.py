@@ -1,9 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer, MatchingToolSerializer, \
     AdoptionAgreementSerializer
-from .models import AdoptionApplication, MatchingTool
+from .models import AdoptionApplication, MatchingTool, AdoptionAgreement
+from ..models import Animal
 from ..permissions import IsAdminOrShelterStaff, IsAdmin
 from rest_framework.response import Response
 from rest_framework import status
@@ -94,3 +96,32 @@ class AdoptionAgreementGenerateView(generics.UpdateAPIView):
     queryset = AdoptionApplication.objects.all()
     serializer_class = AdoptionAgreementSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
+
+    def update(self, request, *args, **kwargs):
+        application = self.get_object()
+        agreement_text = request.data.get("agreement_text")
+        animal_id = request.data.get("animal_id")  # From Postman body
+        animal = get_object_or_404(Animal, id=animal_id)
+
+        if application.status != "approved":
+            return Response({"error": "Agreement can only be generated for approved applications."}, status=400)
+
+        agreement = AdoptionAgreement.objects.create(
+            user=application.user,
+            animal=animal,
+            agreement_text=agreement_text,
+        )
+        agreement.generate_pdf()
+
+        # agreement = AdoptionAgreement.objects.create(
+        #     user=application.user,
+        #     animal=animal,
+        #     agreement_text=agreement_text,
+        # )
+        # agreement.pdf_file = agreement.generate_pdf()
+        # agreement.save()
+
+        return Response({
+            "message": "Adoption agreement generated successfully",
+            "pdf_url": agreement.pdf_file.url if agreement.pdf_file else None
+        }, status=201)
