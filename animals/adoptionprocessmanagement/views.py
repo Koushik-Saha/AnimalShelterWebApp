@@ -1,5 +1,3 @@
-# views.py
-
 from rest_framework import generics, permissions
 from .serializers import AdoptionApplicationSerializer
 from .models import AdoptionApplication
