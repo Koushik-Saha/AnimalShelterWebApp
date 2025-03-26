@@ -13,7 +13,10 @@ from rest_framework import status
 class AdoptionApplicationCreateView(generics.CreateAPIView):
     queryset = AdoptionApplication.objects.all().order_by('-id')
     serializer_class = AdoptionApplicationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class AdoptionApplicationListView(generics.ListAPIView):
     queryset = AdoptionApplication.objects.all().order_by('-id')
