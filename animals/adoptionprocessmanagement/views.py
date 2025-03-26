@@ -1,8 +1,8 @@
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer
-from .models import AdoptionApplication
+from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer, MatchingToolSerializer
+from .models import AdoptionApplication, MatchingTool
 from ..permissions import IsAdminOrShelterStaff
 from rest_framework.response import Response
 from rest_framework import status
@@ -68,3 +68,23 @@ class UpdateApplicationStatusView(generics.UpdateAPIView):
     queryset = AdoptionApplication.objects.all()
     serializer_class = AdoptionApplicationStatusSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrShelterStaff]
+
+
+class MatchingToolCreateView(generics.CreateAPIView):
+    serializer_class = MatchingToolSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(adopter=self.request.user)
+
+class MatchingToolListView(generics.ListAPIView):
+    serializer_class = MatchingToolSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = MatchingTool.objects.all()
+
+class MatchingToolByUserView(generics.RetrieveAPIView):
+    serializer_class = MatchingToolSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return MatchingTool.objects.get(adopter=self.request.user)
