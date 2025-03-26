@@ -12,7 +12,7 @@ class AdoptionApplicationCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 class AdoptionApplicationListView(generics.ListAPIView):
-    queryset = AdoptionApplication.objects.all().order_by('-created_at')
+    queryset = AdoptionApplication.objects.all().order_by('-id')
     serializer_class = AdoptionApplicationSerializer
     permission_classes = [IsAuthenticated, IsStaffOrAdmin]
 
