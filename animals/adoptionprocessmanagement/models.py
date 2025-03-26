@@ -14,6 +14,13 @@ class AdoptionApplication(models.Model):
         ("other", "Other"),
     ]
 
+    STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('under_review', 'Under Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
     # Applicant Information
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
@@ -53,6 +60,9 @@ class AdoptionApplication(models.Model):
     understands_return_policy = models.BooleanField()
 
     submitted_at = models.DateTimeField(auto_now_add=True)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Adoption Application by {self.full_name}"
