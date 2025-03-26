@@ -10,6 +10,6 @@ urlpatterns = [
     path('animal/<int:animal_id>/', ListBehaviorAssessmentsView.as_view(), name='list-behaviors'),
     path('<int:pk>/', BehaviorAssessmentDetailView.as_view(), name='behavior-detail'),
 
-    path("create/", EnrichmentActivityCreateView.as_view(), name="enrichment-create"),
-    path("list/", EnrichmentActivityListView.as_view(), name="enrichment-list"),
+    path("enrichment/create/", EnrichmentActivityCreateView.as_view(), name="enrichment-create"),
+    path("enrichment/list/", EnrichmentActivityListView.as_view(), name="enrichment-list"),
 ]
