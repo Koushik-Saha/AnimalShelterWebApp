@@ -144,3 +144,21 @@ class AdoptionAgreement(models.Model):
         )
 
         buffer.close()
+
+class PostAdoptionFollowUp(models.Model):
+    FOLLOWUP_TYPE_CHOICES = [
+        ("call", "Phone Call"),
+        ("visit", "Home Visit"),
+        ("email", "Email"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    followup_date = models.DateTimeField()
+    followup_type = models.CharField(max_length=10, choices=FOLLOWUP_TYPE_CHOICES)
+    notes = models.TextField(blank=True, null=True)
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.followup_type} on {self.followup_date.strftime('%Y-%m-%d')} for {self.animal.name}"
