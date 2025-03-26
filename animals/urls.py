@@ -88,5 +88,7 @@ urlpatterns = [
     path('appointments/', include('animals.appointments.urls')),
     # Medication Management
     path("medications/", include("animals.medicationManagement.urls")),
+    # Behavior Assessment & Enrichment
+    path('behavior/', include('animals.behavior.urls')),
 
 ]
