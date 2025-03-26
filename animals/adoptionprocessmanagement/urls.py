@@ -21,7 +21,7 @@ urlpatterns = [
 
     path("adoption-applications/agreements/<int:pk>/generate/", AdoptionAgreementGenerateView.as_view(), name="generate-agreement"),
 
-    path('adoption-applications/followups/', PostAdoptionFollowUpListCreateView.as_view(), name='followup-list-create'),
+    path('adoption-applications/followups/create/', PostAdoptionFollowUpListCreateView.as_view(), name='followup-list-create'),
     path('adoption-applications/followups/<int:pk>/', PostAdoptionFollowUpDetailView.as_view(), name='followup-detail'),
 
 ]
