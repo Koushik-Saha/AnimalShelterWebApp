@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import AdoptionApplicationSerializer
+from .serializers import AdoptionApplicationSerializer, AdoptionApplicationStatusSerializer
 from .models import AdoptionApplication
 from ..permissions import IsAdminOrShelterStaff
 from rest_framework.response import Response
@@ -63,3 +63,8 @@ class AdoptionApplicationUpdateView(generics.UpdateAPIView):
             },
             status=status.HTTP_200_OK,
         )
+
+class UpdateApplicationStatusView(generics.UpdateAPIView):
+    queryset = AdoptionApplication.objects.all()
+    serializer_class = AdoptionApplicationStatusSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrShelterStaff]
