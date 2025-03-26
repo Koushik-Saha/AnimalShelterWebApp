@@ -25,3 +25,15 @@ class MatchingToolSerializer(serializers.ModelSerializer):
         model = MatchingTool
         fields = '__all__'
         read_only_fields = ['adopter', 'created_at']
+
+class AdoptionAgreementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdoptionApplication
+        fields = ['id', 'agreement_text']
+
+    def update(self, instance, validated_data):
+        instance.agreement_text = validated_data.get("agreement_text", instance.agreement_text)
+        pdf_file = instance.generate_agreement_pdf()
+        instance.agreement_pdf.save(pdf_file.name, pdf_file, save=True)
+        instance.save()
+        return instance
