@@ -13,3 +13,24 @@ class BehaviorAssessment(models.Model):
 
     def __str__(self):
         return f"Assessment for {self.animal.animal_id} on {self.observed_date}"
+
+class EnrichmentActivity(models.Model):
+    ACTIVITY_TYPES = [
+        ('toy', 'Toy'),
+        ('puzzle', 'Puzzle'),
+        ('walk', 'Walk'),
+        ('training', 'Training'),
+        ('other', 'Other'),
+    ]
+
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE, related_name='enrichment_activities')
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES)
+    description = models.TextField()
+    date_provided = models.DateField()
+    effectiveness_rating = models.IntegerField(default=0)
+    staff_notes = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.animal.name} - {self.activity_type} on {self.date_provided}"
