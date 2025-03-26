@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import AdoptionApplicationCreateView, AdoptionApplicationListView, AdoptionApplicationDetailView, \
-    AdoptionApplicationUpdateView
+    AdoptionApplicationUpdateView, UpdateApplicationStatusView
 
 urlpatterns = [
     path("adoption-applications/create/", AdoptionApplicationCreateView.as_view(), name="create-adoption-application"),
@@ -10,5 +10,7 @@ urlpatterns = [
 
     path("adoption-applications/<int:pk>/update/", AdoptionApplicationUpdateView.as_view(),
          name="update-adoption-application"),
+
+    path('adoption-applications/<int:pk>/status/', UpdateApplicationStatusView.as_view(), name="update-application-status"),
 
 ]
