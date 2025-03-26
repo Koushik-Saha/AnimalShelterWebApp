@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (
     CreateBehaviorAssessmentView,
     ListBehaviorAssessmentsView,
-    BehaviorAssessmentDetailView, EnrichmentActivityCreateView, EnrichmentActivityListView,
+    BehaviorAssessmentDetailView, EnrichmentActivityCreateView, EnrichmentActivityListView, TrainingNoteListView,
+    TrainingNoteCreateView, TrainingNoteDetailView,
 )
 
 urlpatterns = [
@@ -12,4 +13,8 @@ urlpatterns = [
 
     path("enrichment/create/", EnrichmentActivityCreateView.as_view(), name="enrichment-create"),
     path("enrichment/list/", EnrichmentActivityListView.as_view(), name="enrichment-list"),
+
+    path('training-notes/', TrainingNoteListView.as_view(), name='training-note-list'),
+    path('training-notes/create/', TrainingNoteCreateView.as_view(), name='training-note-create'),
+    path('training-notes/<int:pk>/', TrainingNoteDetailView.as_view(), name='training-note-detail'),
 ]
