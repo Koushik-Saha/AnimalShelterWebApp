@@ -1,5 +1,11 @@
 from django.db import models
 from django.conf import settings
+from django.core.files.base import ContentFile
+from io import BytesIO
+from reportlab.pdfgen import canvas
+
+from animals.models import Animal
+
 
 class AdoptionApplication(models.Model):
     HOME_TYPES = [
@@ -64,6 +70,24 @@ class AdoptionApplication(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
     updated_at = models.DateTimeField(auto_now=True)
 
+    agreement_text = models.TextField(blank=True, null=True)
+    agreement_pdf = models.FileField(upload_to="adoption_agreements/", blank=True, null=True)
+
+    def generate_agreement_pdf(self):
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer)
+        p.drawString(100, 800, f"Adoption Agreement for: {self.full_name}")
+        p.drawString(100, 780, f"Address: {self.address}")
+        p.drawString(100, 760, f"Phone: {self.phone_number}")
+        p.drawString(100, 740, f"Email: {self.email}")
+        p.drawString(100, 720, f"Commitment: {self.lifelong_care_commitment}")
+        p.drawString(100, 700, "Thank you for choosing to adopt!")
+        p.showPage()
+        p.save()
+
+        buffer.seek(0)
+        return ContentFile(buffer.read(), name=f"{self.full_name}_agreement.pdf")
+
     def __str__(self):
         return f"Adoption Application by {self.full_name}"
 
@@ -81,3 +105,30 @@ class MatchingTool(models.Model):
 
     def __str__(self):
         return f"{self.adopter.username} - {self.pet_type} Preference"
+
+class AdoptionAgreement(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    agreement_text = models.TextField()
+    pdf_file = models.FileField(upload_to='agreements/pdfs/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Agreement for {self.user.username} - {self.animal.name}"
+
+    def generate_pdf(self):
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer)
+        p.drawString(100, 800, "Adoption Agreement")
+        p.drawString(100, 780, f"User: {self.user.username}")
+        p.drawString(100, 760, f"Animal: {self.animal.name}")
+        text_object = p.beginText(100, 740)
+        for line in self.agreement_text.splitlines():
+            text_object.textLine(line)
+        p.drawText(text_object)
+        p.showPage()
+        p.save()
+
+        buffer.seek(0)
+        self.pdf_file.save(f"agreement_{self.user.id}_{self.animal.id}.pdf", ContentFile(buffer.read()), save=False)
+        buffer.close()
