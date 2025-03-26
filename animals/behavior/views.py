@@ -7,7 +7,7 @@ from .permissions import CanManageBehaviorAssessment, IsStaffOrReadOnly
 
 
 class CreateBehaviorAssessmentView(generics.CreateAPIView):
-    queryset = BehaviorAssessment.objects.all()
+    queryset = BehaviorAssessment.objects.all().order_by('-created_at')
     serializer_class = BehaviorAssessmentSerializer
     permission_classes = [permissions.IsAuthenticated, CanManageBehaviorAssessment]
 
@@ -22,7 +22,7 @@ class ListBehaviorAssessmentsView(generics.ListAPIView):
         return BehaviorAssessment.objects.filter(animal__id=self.kwargs["animal_id"])
 
 class BehaviorAssessmentDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BehaviorAssessment.objects.all()
+    queryset = BehaviorAssessment.objects.all().order_by('-created_at')
     serializer_class = BehaviorAssessmentSerializer
     permission_classes = [permissions.IsAuthenticated, CanManageBehaviorAssessment]
 
@@ -40,7 +40,7 @@ class EnrichmentActivityListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return EnrichmentActivity.objects.all()
+        return EnrichmentActivity.objects.all().order_by('-created_at')
 
 class TrainingNoteCreateView(generics.CreateAPIView):
     queryset = TrainingNote.objects.all()
@@ -51,11 +51,11 @@ class TrainingNoteCreateView(generics.CreateAPIView):
         serializer.save(created_by=self.request.user)
 
 class TrainingNoteListView(generics.ListAPIView):
-    queryset = TrainingNote.objects.all()
+    queryset = TrainingNote.objects.all().order_by('-created_at')
     serializer_class = TrainingNoteSerializer
     permission_classes = [IsAuthenticated]
 
 class TrainingNoteDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TrainingNote.objects.all()
+    queryset = TrainingNote.objects.all().order_by('-created_at')
     serializer_class = TrainingNoteSerializer
     permission_classes = [IsAuthenticated, IsStaffOrReadOnly]
