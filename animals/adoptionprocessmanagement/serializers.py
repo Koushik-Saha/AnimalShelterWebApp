@@ -12,3 +12,9 @@ class AdoptionApplicationSerializer(serializers.ModelSerializer):
         if data.get('own_or_rent') == 'rent' and not data.get('landlord_permission'):
             raise serializers.ValidationError("Landlord permission is required if renting.")
         return data
+
+class AdoptionApplicationStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdoptionApplication
+        fields = ['id', 'status', 'updated_at']
+        read_only_fields = ['id', 'updated_at']
