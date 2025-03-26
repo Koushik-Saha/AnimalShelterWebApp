@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import AdoptionApplicationCreateView, AdoptionApplicationListView, AdoptionApplicationDetailView, \
-    AdoptionApplicationUpdateView, UpdateApplicationStatusView
+    AdoptionApplicationUpdateView, UpdateApplicationStatusView, MatchingToolCreateView, MatchingToolListView, \
+    MatchingToolByUserView
 
 urlpatterns = [
     path("adoption-applications/create/", AdoptionApplicationCreateView.as_view(), name="create-adoption-application"),
@@ -12,5 +13,9 @@ urlpatterns = [
          name="update-adoption-application"),
 
     path('adoption-applications/<int:pk>/status/', UpdateApplicationStatusView.as_view(), name="update-application-status"),
+
+    path('adoption-applications/matching-tool/create/', MatchingToolCreateView.as_view(), name='matching-tool-create'),
+    path('adoption-applications/matching-tool/list/', MatchingToolListView.as_view(), name='matching-tool-list'),
+    path('adoption-applications/matching-tool/me/', MatchingToolByUserView.as_view(), name='matching-tool-me'),
 
 ]
