@@ -119,16 +119,24 @@ class AdoptionAgreement(models.Model):
     def generate_pdf(self):
         buffer = BytesIO()
         p = canvas.Canvas(buffer)
+
         p.drawString(100, 800, "Adoption Agreement")
         p.drawString(100, 780, f"User: {self.user.username}")
         p.drawString(100, 760, f"Animal: {self.animal.name}")
+
         text_object = p.beginText(100, 740)
         for line in self.agreement_text.splitlines():
             text_object.textLine(line)
         p.drawText(text_object)
+
         p.showPage()
         p.save()
 
         buffer.seek(0)
-        self.pdf_file.save(f"agreement_{self.user.id}_{self.animal.id}.pdf", ContentFile(buffer.read()), save=False)
+        # Save to FileField
+        self.pdf_file.save(
+            f"{self.user.username}_{self.animal.name}_agreement.pdf",
+            ContentFile(buffer.read())
+        )
         buffer.close()
+        self.save()
