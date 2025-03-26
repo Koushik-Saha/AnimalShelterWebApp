@@ -66,3 +66,18 @@ class AdoptionApplication(models.Model):
 
     def __str__(self):
         return f"Adoption Application by {self.full_name}"
+
+
+class MatchingTool(models.Model):
+    adopter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    pet_type = models.CharField(max_length=50)
+    activity_level = models.CharField(max_length=50)
+    home_environment = models.CharField(max_length=100)
+    has_children = models.BooleanField()
+    has_other_pets = models.BooleanField()
+    allergies = models.BooleanField(default=False)
+    preferred_size = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.adopter.username} - {self.pet_type} Preference"
