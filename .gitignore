@@ -1,5 +1,7 @@
 # Python bytecode and cache files
 __pycache__/
+__pycache__
+**/__pycache__
 *.py[cod]
 *$py.class
 
@@ -22,6 +24,5 @@ local_settings.py
 .env
 
 # Ignore Python cache files
-__pycache__/
 *.pyc
 *.pyo
