@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import AdoptionApplication
+from .models import AdoptionApplication, MatchingTool
+
 
 class AdoptionApplicationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +19,9 @@ class AdoptionApplicationStatusSerializer(serializers.ModelSerializer):
         model = AdoptionApplication
         fields = ['id', 'status', 'updated_at']
         read_only_fields = ['id', 'updated_at']
+
+class MatchingToolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchingTool
+        fields = '__all__'
+        read_only_fields = ['adopter', 'created_at']
