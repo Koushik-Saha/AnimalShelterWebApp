@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AdoptionApplication, MatchingTool, AdoptionAgreement
+from .models import AdoptionApplication, MatchingTool, AdoptionAgreement, PostAdoptionFollowUp
 
 
 class AdoptionApplicationSerializer(serializers.ModelSerializer):
@@ -42,3 +42,9 @@ class AdoptionAgreementSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdoptionAgreement
         fields = '__all__'
+
+class PostAdoptionFollowUpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostAdoptionFollowUp
+        fields = '__all__'
+        read_only_fields = ['user']
