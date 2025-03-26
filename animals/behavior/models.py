@@ -34,3 +34,13 @@ class EnrichmentActivity(models.Model):
 
     def __str__(self):
         return f"{self.animal.name} - {self.activity_type} on {self.date_provided}"
+
+
+class TrainingNote(models.Model):
+    animal = models.ForeignKey('animals.Animal', on_delete=models.CASCADE, related_name='training_notes')
+    note = models.TextField()
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Training note for {self.animal.name}"
