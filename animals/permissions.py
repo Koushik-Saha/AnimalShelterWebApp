@@ -36,3 +36,7 @@ class IsAdminOrReadOnly(BasePermission):
 class IsStaffOrAdmin(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)
+
+class IsAdminOrShelterStaff(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and (request.user.role in ["admin", "staff"])

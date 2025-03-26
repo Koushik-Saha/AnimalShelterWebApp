@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializers import AdoptionApplicationSerializer
 from .models import AdoptionApplication
-from ..permissions import IsStaffOrAdmin
+from ..permissions import IsAdminOrShelterStaff
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -18,19 +18,19 @@ class AdoptionApplicationCreateView(generics.CreateAPIView):
 class AdoptionApplicationListView(generics.ListAPIView):
     queryset = AdoptionApplication.objects.all().order_by('-id')
     serializer_class = AdoptionApplicationSerializer
-    permission_classes = [IsAuthenticated, IsStaffOrAdmin]
+    permission_classes = [IsAuthenticated, IsAdminOrShelterStaff]
 
 
 class AdoptionApplicationDetailView(generics.RetrieveAPIView):
     queryset = AdoptionApplication.objects.all()
     serializer_class = AdoptionApplicationSerializer
-    permission_classes = [IsAuthenticated, IsStaffOrAdmin]
+    permission_classes = [IsAuthenticated, IsAdminOrShelterStaff]
 
 
 class AdoptionApplicationUpdateView(generics.UpdateAPIView):
     queryset = AdoptionApplication.objects.all()
     serializer_class = AdoptionApplicationSerializer
-    permission_classes = [IsAuthenticated, IsStaffOrAdmin]
+    permission_classes = [IsAuthenticated, IsAdminOrShelterStaff]
 
     def update(self, request, *args, **kwargs):
         application = self.get_object()
