@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
     'animal-shelter-webapp.azurewebsites.net'
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 # Application definition
 INSTALLED_APPS = [
