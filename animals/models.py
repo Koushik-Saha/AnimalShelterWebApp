@@ -73,6 +73,12 @@ class Animal(models.Model):
         (PLAYFUL, 'Playful'),
     ]
 
+    HEALTH_STATUS_CHOICES = [
+        ("healthy", "Healthy"),
+        ("needs_care", "Needs Care"),
+        ("critical", "Critical"),
+    ]
+
     name = models.CharField(max_length=100)
     species = models.CharField(max_length=50)  # e.g., Dog, Cat, Rabbit
     breed = models.CharField(max_length=100, blank=True, null=True)
@@ -83,6 +89,12 @@ class Animal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     temperament = models.CharField(max_length=50, choices=TEMPERAMENT_CHOICES, default=FRIENDLY)
+
+    health_status = models.CharField(
+        max_length=20,
+        choices=HEALTH_STATUS_CHOICES,
+        default="healthy",
+    )
 
     def __str__(self):
         return f"{self.name} ({self.species}) - {self.get_status_display()}"
