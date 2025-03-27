@@ -27,7 +27,12 @@ SECRET_KEY = "django-insecure-9a&0*-^wfjfnshm=ur^5dej93v5pk_kc2ys&@p8q39&1(c*pf0
 DEBUG = True
 
 # Allow all hosts (useful for local testing)
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'animal-shelter-webapp.azurewebsites.net'
+]
+
 
 # Application definition
 INSTALLED_APPS = [
