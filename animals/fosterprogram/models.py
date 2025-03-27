@@ -40,3 +40,13 @@ class FosterPlacement(models.Model):
 
     def __str__(self):
         return f"{self.animal.name} placed with {self.foster_application.full_name}"
+
+class FosterCommunication(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_messages")
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="received_messages")
+    foster_application = models.ForeignKey("FosterApplication", on_delete=models.CASCADE, related_name="communications")
+    message = models.TextField()
+    sent_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message from {self.sender.username} to {self.recipient.username} - {self.sent_at.strftime('%Y-%m-%d %H:%M')}"

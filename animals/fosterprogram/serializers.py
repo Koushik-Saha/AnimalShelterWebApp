@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import FosterApplication, FosterPlacement
+from .models import FosterApplication, FosterPlacement, FosterCommunication
 from ..models import Animal
 
 
@@ -23,3 +23,8 @@ class FosterPlacementSerializer(serializers.ModelSerializer):
     class Meta:
         model = FosterPlacement
         fields = '__all__'
+
+class FosterCommunicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FosterCommunication
+        fields = "__all__"
