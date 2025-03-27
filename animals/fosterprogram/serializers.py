@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import FosterApplication
+from .models import FosterApplication, FosterPlacement
 from ..models import Animal
 
 
@@ -17,4 +17,9 @@ class MatchedFosterApplicationSerializer(serializers.ModelSerializer):
 class MatchedAnimalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Animal
+        fields = '__all__'
+
+class FosterPlacementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FosterPlacement
         fields = '__all__'
