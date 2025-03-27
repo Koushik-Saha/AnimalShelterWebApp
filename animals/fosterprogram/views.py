@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import FosterApplication, FosterPlacement, FosterCommunication
 from .serializers import FosterApplicationSerializer, MatchedFosterApplicationSerializer, MatchedAnimalSerializer, \
     FosterPlacementSerializer, FosterCommunicationSerializer
-from .. import models
+from django.db.models import Q
 from ..models import Animal
 
 
@@ -81,5 +81,5 @@ class FosterCommunicationListView(generics.ListAPIView):
 
     def get_queryset(self):
         return FosterCommunication.objects.filter(
-            models.Q(sender=self.request.user) | models.Q(recipient=self.request.user)
-        ).order_by('-sent_at')
+            Q(sender=self.request.user) | Q(recipient=self.request.user)
+        ).order_by("-sent_at")
