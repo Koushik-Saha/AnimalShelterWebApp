@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 
+from animals.models import Animal
+
+
 class FosterApplication(models.Model):
 
 
@@ -23,3 +26,17 @@ class FosterApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - Foster Application"
+
+
+class FosterPlacement(models.Model):
+    foster_application = models.ForeignKey(FosterApplication, on_delete=models.CASCADE)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    notes = models.TextField(blank=True)
+    status = models.CharField(max_length=50, default="active")  # active, completed, etc.
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.animal.name} placed with {self.foster_application.full_name}"
