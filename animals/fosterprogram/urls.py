@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import FosterApplicationCreateView, FosterApplicationListView, FosterApplicationDetailView, \
-    FosterApplicationUpdateView, FosterApplicationDeleteView, FosterMatchView
+    FosterApplicationUpdateView, FosterApplicationDeleteView, FosterMatchView, FosterPlacementListCreateView, \
+    FosterPlacementDetailView
 
 urlpatterns = [
     path('create/', FosterApplicationCreateView.as_view(), name='foster-create'),
@@ -10,4 +11,7 @@ urlpatterns = [
     path('<int:pk>/delete/', FosterApplicationDeleteView.as_view(), name='foster-delete'),
 
     path('match-foster-animals/', FosterMatchView.as_view(), name='match-foster-animals'),
+
+    path('foster-placements/', FosterPlacementListCreateView.as_view(), name='foster-placement-list-create'),
+    path('foster-placements/<int:pk>/', FosterPlacementDetailView.as_view(), name='foster-placement-detail'),
 ]
