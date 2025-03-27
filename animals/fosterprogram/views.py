@@ -2,8 +2,9 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import FosterApplication
-from .serializers import FosterApplicationSerializer, MatchedFosterApplicationSerializer, MatchedAnimalSerializer
+from .models import FosterApplication, FosterPlacement
+from .serializers import FosterApplicationSerializer, MatchedFosterApplicationSerializer, MatchedAnimalSerializer, \
+    FosterPlacementSerializer
 from ..models import Animal
 
 
@@ -57,3 +58,13 @@ class FosterMatchView(APIView):
                 })
 
         return Response(matched_pairs)
+
+class FosterPlacementListCreateView(generics.ListCreateAPIView):
+    queryset = FosterPlacement.objects.all()
+    serializer_class = FosterPlacementSerializer
+    permission_classes = [IsAuthenticated]
+
+class FosterPlacementDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FosterPlacement.objects.all()
+    serializer_class = FosterPlacementSerializer
+    permission_classes = [IsAuthenticated]
