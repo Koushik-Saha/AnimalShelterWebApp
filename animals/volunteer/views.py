@@ -5,7 +5,7 @@ from .serializers import VolunteerApplicationSerializer
 from ..utils import success_response, error_response
 
 class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
-    queryset = VolunteerApplication.objects.all().order_by('-created_at')
+    queryset = VolunteerApplication.objects.all().order_by('-id')
     serializer_class = VolunteerApplicationSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
