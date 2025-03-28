@@ -39,3 +39,19 @@ class VolunteerProfile(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name()} - Volunteer Profile"
 
+
+class VolunteerSchedule(models.Model):
+    volunteer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="volunteer_schedules")
+    shift_date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    task_description = models.TextField()
+    location = models.CharField(max_length=255)
+    is_confirmed = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.volunteer.username} - {self.shift_date} ({self.start_time} to {self.end_time})"
+
