@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import VolunteerApplication
-from .serializers import VolunteerApplicationSerializer
+from .models import VolunteerApplication, VolunteerProfile
+from .serializers import VolunteerApplicationSerializer, VolunteerProfileSerializer
 from ..utils import success_response, error_response
 
 class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
@@ -32,3 +32,12 @@ class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpda
 
     def destroy(self, request, *args, **kwargs):
         return success_response("Volunteer application deleted", super().destroy(request, *args, **kwargs).data)
+
+
+class VolunteerProfileView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+    queryset = VolunteerProfile.objects.all().order_by('-id')
+    serializer_class = VolunteerProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['availability', 'skills']
+    search_fields = ['full_name', 'skills']
