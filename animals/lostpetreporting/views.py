@@ -4,8 +4,8 @@ from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 
-from .models import LostPetReport, FoundAnimalReport
-from .serializers import LostPetReportSerializer, FoundAnimalSerializer
+from .models import LostPetReport, FoundAnimalReport, OwnerContactInfo
+from .serializers import LostPetReportSerializer, FoundAnimalSerializer, OwnerContactInfoSerializer
 from ..utils import success_response, error_response, match_lost_and_found
 from rest_framework import status
 
@@ -111,3 +111,38 @@ class MatchLostPetWithFoundAnimalsView(APIView):
         serializer = FoundAnimalSerializer(matches, many=True)
 
         return success_response("Matching found animals", serializer.data)
+
+class OwnerContactInfoView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+    queryset = OwnerContactInfo.objects.all().order_by('-created_at')
+    serializer_class = OwnerContactInfoSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['email', 'phone_number']
+    search_fields = ['email', 'phone_number', 'address']
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return success_response("Owner contact information created successfully", serializer.data)
+        return error_response("Validation failed", serializer.errors)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return success_response("Owner contact information updated successfully", serializer.data)
+        return error_response("Validation failed", serializer.errors)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return success_response("Owner contact information deleted successfully")

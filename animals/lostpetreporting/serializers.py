@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import LostPetReport, FoundAnimalReport
+from .models import LostPetReport, FoundAnimalReport, OwnerContactInfo
 
 
 class LostPetReportSerializer(serializers.ModelSerializer):
@@ -17,3 +17,10 @@ class FoundAnimalSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['finder'] = self.context['request'].user
         return super().create(validated_data)
+
+class OwnerContactInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OwnerContactInfo
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user']
+
