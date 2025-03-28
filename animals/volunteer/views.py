@@ -1,12 +1,9 @@
-from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule, VolunteerActivity, VolunteerMessage
 from .serializers import VolunteerApplicationSerializer, VolunteerProfileSerializer, VolunteerScheduleSerializer, \
     VolunteerActivitySerializer, VolunteerMessageSerializer
 from ..utils import success_response, error_response
-
-User = get_user_model()
 
 class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = VolunteerApplication.objects.all().order_by('-id')
