@@ -99,7 +99,7 @@ urlpatterns = [
 
     path('lost-pet-reporting/', include('animals.lostpetreporting.urls')),
 
-    path('volunteer/', include('animals.volunteer.urls')),
+    path('volunteers/', include('animals.volunteer.urls')),
 
 ]
 
