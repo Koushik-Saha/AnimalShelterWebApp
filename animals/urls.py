@@ -97,7 +97,7 @@ urlpatterns = [
     # Foster Care Management
     path('foster-applications/', include('animals.fosterprogram.urls')),
 
-    path('lostpetreporting/', include('animals.lostpetreporting.urls')),
+    path('lost-pet-reporting/', include('animals.lostpetreporting.urls')),
 
 ]
 

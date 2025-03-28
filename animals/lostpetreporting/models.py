@@ -16,6 +16,12 @@ class LostPetReport(models.Model):
     contact_info = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100, default="Unnamed")
+    status = models.CharField(
+        max_length=20,
+        choices=[("pending", "Pending"), ("approved", "Approved"), ("resolved", "Resolved")],
+        default="pending"
+    )
 
     def __str__(self):
         return f"{self.pet_name} - {self.reporter}"
