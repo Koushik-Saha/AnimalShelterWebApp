@@ -108,6 +108,6 @@ class MatchLostPetWithFoundAnimalsView(APIView):
 
         found_animals = FoundAnimalReport.objects.filter(status="unclaimed")
         matches = match_lost_and_found(lost_pet, found_animals)
-        serializer = FoundAnimalReportSerializer(matches, many=True)
+        serializer = FoundAnimalSerializer(matches, many=True)
 
         return success_response("Matching found animals", serializer.data)
