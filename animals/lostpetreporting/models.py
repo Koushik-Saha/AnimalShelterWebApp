@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from animal_shelter import settings
+
 User = get_user_model()
 
 class LostPetReport(models.Model):
@@ -47,3 +49,16 @@ class FoundAnimalReport(models.Model):
 
     def __str__(self):
         return f"{self.species} reported by {self.finder}"
+
+class OwnerContactInfo(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="owner_contact")
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
+    address = models.TextField(blank=True)
+    emergency_contact = models.CharField(max_length=100, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Contact Info for {self.user}"
