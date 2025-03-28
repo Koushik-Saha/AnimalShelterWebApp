@@ -5,5 +5,5 @@ urlpatterns = [
     path('applications/', VolunteerApplicationView.as_view(), name='volunteer-applications'),
     path('applications/<int:pk>/', VolunteerApplicationView.as_view(), name='volunteer-applications-detail'),
 
-    path('volunteers/profiles/', VolunteerProfileView.as_view(), name='volunteer-profiles'),
+    path('profiles/', VolunteerProfileView.as_view(), name='volunteer-profiles'),
 ]
