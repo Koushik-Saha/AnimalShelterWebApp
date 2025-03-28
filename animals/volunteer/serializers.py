@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule
+from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule, VolunteerActivity
 
 
 class VolunteerApplicationSerializer(serializers.ModelSerializer):
@@ -19,3 +19,8 @@ class VolunteerScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = VolunteerSchedule
         fields = '__all__'
+
+class VolunteerActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VolunteerActivity
+        fields = "__all__"

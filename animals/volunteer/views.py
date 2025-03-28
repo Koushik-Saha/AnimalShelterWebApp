@@ -1,7 +1,8 @@
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule
-from .serializers import VolunteerApplicationSerializer, VolunteerProfileSerializer, VolunteerScheduleSerializer
+from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule, VolunteerActivity
+from .serializers import VolunteerApplicationSerializer, VolunteerProfileSerializer, VolunteerScheduleSerializer, \
+    VolunteerActivitySerializer
 from ..utils import success_response, error_response
 
 class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
@@ -51,3 +52,11 @@ class VolunteerScheduleView(generics.ListCreateAPIView, generics.RetrieveUpdateD
     filterset_fields = ['volunteer', 'shift_date', 'location', 'is_confirmed']
     search_fields = ['task_description', 'location']
     ordering_fields = ['shift_date', 'start_time']
+
+class VolunteerActivityView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+    queryset = VolunteerActivity.objects.all().order_by('-date')
+    serializer_class = VolunteerActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['volunteer', 'date', 'activity_type']
+    search_fields = ['activity_type', 'description']

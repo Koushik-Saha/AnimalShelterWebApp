@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import VolunteerApplicationView, VolunteerProfileView, VolunteerScheduleView
+from .views import VolunteerApplicationView, VolunteerProfileView, VolunteerScheduleView, VolunteerActivityView
 
 urlpatterns = [
     path('applications/', VolunteerApplicationView.as_view(), name='volunteer-applications'),
@@ -8,4 +8,7 @@ urlpatterns = [
     path('profiles/', VolunteerProfileView.as_view(), name='volunteer-profiles'),
 
     path('schedules/', VolunteerScheduleView.as_view(), name='volunteer-schedules'),
+
+    path("volunteer/activities/", VolunteerActivityView.as_view(), name="volunteer-activity-crud"),
+
 ]
