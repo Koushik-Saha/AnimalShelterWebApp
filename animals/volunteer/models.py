@@ -1,4 +1,3 @@
-# animals/volunteer/models.py
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -69,8 +68,16 @@ class VolunteerActivity(models.Model):
         return f"{self.volunteer} - {self.activity_type} on {self.date}"
 
 class VolunteerMessage(models.Model):
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_messages")
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="received_messages")
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="volunteer_sent_messages"
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="volunteer_received_messages"
+    )
     subject = models.CharField(max_length=255)
     message = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
