@@ -2,9 +2,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
+
 from .models import LostPetReport, FoundAnimalReport
 from .serializers import LostPetReportSerializer, FoundAnimalSerializer
-from ..utils import success_response, error_response
+from ..utils import success_response, error_response, match_lost_and_found
 from rest_framework import status
 
 
@@ -94,3 +96,18 @@ class FoundAnimalView(
 
     def perform_create(self, serializer):
         serializer.save(finder=self.request.user)
+
+class MatchLostPetWithFoundAnimalsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, lost_pet_id):
+        try:
+            lost_pet = LostPetReport.objects.get(id=lost_pet_id)
+        except LostPetReport.DoesNotExist:
+            return error_response("Lost pet not found.", status.HTTP_404_NOT_FOUND)
+
+        found_animals = FoundAnimalReport.objects.filter(status="unclaimed")
+        matches = match_lost_and_found(lost_pet, found_animals)
+        serializer = FoundAnimalReportSerializer(matches, many=True)
+
+        return success_response("Matching found animals", serializer.data)
