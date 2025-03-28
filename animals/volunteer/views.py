@@ -1,9 +1,12 @@
+from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule, VolunteerActivity
+from .models import VolunteerApplication, VolunteerProfile, VolunteerSchedule, VolunteerActivity, VolunteerMessage
 from .serializers import VolunteerApplicationSerializer, VolunteerProfileSerializer, VolunteerScheduleSerializer, \
-    VolunteerActivitySerializer
+    VolunteerActivitySerializer, VolunteerMessageSerializer
 from ..utils import success_response, error_response
+
+User = get_user_model()
 
 class VolunteerApplicationView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = VolunteerApplication.objects.all().order_by('-id')
@@ -60,3 +63,19 @@ class VolunteerActivityView(generics.ListCreateAPIView, generics.RetrieveUpdateD
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['volunteer', 'date', 'activity_type']
     search_fields = ['activity_type', 'description']
+
+
+class VolunteerMessageListCreateView(generics.ListCreateAPIView):
+    queryset = VolunteerMessage.objects.all()
+    serializer_class = VolunteerMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['subject', 'message', 'sender__username', 'recipient__username']
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+class VolunteerMessageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = VolunteerMessage.objects.all()
+    serializer_class = VolunteerMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
