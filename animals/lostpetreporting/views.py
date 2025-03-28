@@ -1,9 +1,9 @@
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import LostPetReport
-from .serializers import LostPetReportSerializer
+from .models import LostPetReport, FoundAnimalReport
+from .serializers import LostPetReportSerializer, FoundAnimalSerializer
 from ..utils import success_response, error_response
 from rest_framework import status
 
@@ -11,7 +11,7 @@ from rest_framework import status
 class LostPetReportView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = LostPetReport.objects.all().order_by('-created_at')
     serializer_class = LostPetReportSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'species', 'last_seen_location']
     search_fields = ['description', 'location', 'reporter_name']
@@ -77,3 +77,20 @@ class LostPetFilterView(ListAPIView):
             queryset = queryset.filter(reporter=self.request.user)
 
         return queryset
+
+class FoundAnimalView(
+    generics.ListCreateAPIView,
+    generics.RetrieveUpdateDestroyAPIView
+):
+    queryset = FoundAnimalReport.objects.all().order_by('-created_at')
+    serializer_class = FoundAnimalSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'species', 'found_location']
+    search_fields = ['description', 'found_location', 'species', 'breed']
+
+    def get_queryset(self):
+        return FoundAnimalReport.objects.all().order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(finder=self.request.user)
