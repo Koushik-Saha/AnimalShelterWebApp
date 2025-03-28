@@ -23,3 +23,19 @@ class VolunteerApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
+
+
+class VolunteerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="volunteer_profile")
+    phone_number = models.CharField(max_length=20)
+    address = models.TextField()
+    emergency_contact = models.CharField(max_length=100)
+    skills = models.TextField()
+    availability = models.CharField(max_length=255)
+    notes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.get_full_name()} - Volunteer Profile"
+
