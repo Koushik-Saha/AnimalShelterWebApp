@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import timedelta
 
 
 def send_donation_email(user_email, amount):
@@ -52,3 +53,17 @@ def error_response(errors=None, message="Failed", code=status.HTTP_400_BAD_REQUE
         "message": message,
         "errors": errors
     }, status=code)
+
+def match_lost_and_found(lost_pet, found_animals_queryset):
+    matched = []
+    for found in found_animals_queryset:
+        # Basic rule-based matching logic
+        if (
+            lost_pet.species.lower() == found.species.lower() and
+            lost_pet.color.lower() == found.color.lower() and
+            lost_pet.breed.lower() == found.breed.lower() and
+            lost_pet.last_seen_location.lower() in found.found_location.lower() and
+            abs((lost_pet.last_seen_date - found.found_date).days) <= 7  # within 1 week
+        ):
+            matched.append(found)
+    return matched
