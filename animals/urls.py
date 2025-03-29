@@ -103,6 +103,8 @@ urlpatterns = [
 
     path('inventory/', include('animals.inventory.urls')),
 
+    path('reporting-analytics/', include('animals.reporting.urls')),
+
 ]
 
 
