@@ -48,6 +48,11 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",  # ✅ Enable token authentication
     "animals",  # Your app,
     "django_filters",
+    # OTP Details
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    'two_factor.plugins.phonenumber',
 ]
 
 # ✅ Fix: Ensure Token Authentication Works
@@ -94,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = "animal_shelter.urls"

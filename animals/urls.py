@@ -2,6 +2,7 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from animal_shelter import settings
+from . import admin
 from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
@@ -18,9 +19,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from django.urls import path, include
-
-
-
+from two_factor import urls as tf_urls
 
 urlpatterns = [
     # Login & Register
@@ -105,6 +104,8 @@ urlpatterns = [
 
     path('reporting-analytics/', include('animals.reporting.urls')),
 
+    # Add two factor auth
+    path('account/', include((tf_urls.urlpatterns, 'two_factor'), namespace='two_factor')),
 ]
 
 
