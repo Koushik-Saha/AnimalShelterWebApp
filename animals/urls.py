@@ -101,6 +101,8 @@ urlpatterns = [
 
     path('volunteers/', include('animals.volunteer.urls')),
 
+    path('inventory/', include('animals.inventory.urls')),
+
 ]
 
 
