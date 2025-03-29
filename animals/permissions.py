@@ -50,3 +50,21 @@ class IsAdminOrShelterStaff(BasePermission):
 class IsUserOrAdmin(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated
+
+# New Permission Details
+
+class IsShelterStaff(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == 'staff'
+
+class IsVolunteer(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == 'volunteer'
+
+class IsVeterinarian(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == 'vet'
+
+class IsAdopterOrFoster(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role in ['adopter', 'foster']
