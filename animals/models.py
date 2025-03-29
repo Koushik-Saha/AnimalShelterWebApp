@@ -37,7 +37,7 @@ class CustomUser(AbstractUser):
         ('donor', 'Donor'),
     ]
 
-    full_name = models.CharField(max_length=255)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='volunteer')
