@@ -1,0 +1,9 @@
+# render.yaml
+services:
+  - type: web
+    name: animal-shelter-app
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn your_project_name.wsgi:application"
+    autoDeploy: true
+    branch: main
