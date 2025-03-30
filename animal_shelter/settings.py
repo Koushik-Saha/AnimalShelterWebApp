@@ -36,6 +36,8 @@ ALLOWED_HOSTS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
+SITE_ID = 1
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -48,7 +50,21 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",  # ✅ Enable token authentication
     "animals",  # Your app,
     "django_filters",
+    # Social Login Integration
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # Add Facebook/Twitter as needed
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # ✅ Fix: Ensure Token Authentication Works
 REST_FRAMEWORK = {
@@ -94,6 +110,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "animal_shelter.urls"

@@ -23,6 +23,7 @@ from django.urls import path, include
 
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
     # Login & Register
     path('register/', register_user, name='register_staff'),
     path('login/', login_user, name='login_user'),
