@@ -69,8 +69,8 @@ def send_email(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def home(request):
-    return render(request, 'home.html')
-    # return HttpResponse("✅ Animal Shelter Web App is running!")
+    # return render(request, 'home.html')
+    return HttpResponse("✅ Animal Shelter Web App is running!")
 
 def approve_adoption(request, adoption_id):
     try:
