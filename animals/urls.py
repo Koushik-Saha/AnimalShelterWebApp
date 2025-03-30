@@ -13,7 +13,7 @@ from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView,
     AdoptionRequestListView, AdoptionRequestCreateView, AdoptionRequestUpdateView, AdoptionRequestDeleteView, \
     UserProfileView, AdoptionHistoryView, UploadHomeVerificationView, FinancialReportsView, AnimalListView, \
     ManageAnimalView, NotificationListView, approve_adoption, AdminDashboardView, DonationHistoryView, \
-    CreateSubscriptionView, StripeWebhookView
+    CreateSubscriptionView, StripeWebhookView, home
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -24,6 +24,7 @@ from django.urls import path, include
 
 
 urlpatterns = [
+    path('', home, name='home'),
     # path('accounts/', include('allauth.urls')),
     # Login & Register
     path('register/', register_user, name='register_staff'),

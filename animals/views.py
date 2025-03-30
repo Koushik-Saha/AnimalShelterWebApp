@@ -33,6 +33,9 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import render
+
 
 
 logger = logging.getLogger(__name__)
@@ -64,6 +67,10 @@ def send_email(request):
         return Response({"message": "Email sent successfully"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def home(request):
+    return render(request, 'home.html')
+    # return HttpResponse("✅ Animal Shelter Web App is running!")
 
 def approve_adoption(request, adoption_id):
     try:
