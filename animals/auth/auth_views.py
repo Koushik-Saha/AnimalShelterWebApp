@@ -1,4 +1,6 @@
 import stripe
+from rest_framework.views import APIView
+
 from animals.models import CustomUser
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import permission_classes
@@ -88,46 +90,47 @@ def register_user(request):
     }, status=status.HTTP_201_CREATED)
 
 # Login and Get Token
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_user(request):
-    """
-    Endpoint for staff login and token retrieval.
-    Only staff users can log in through this endpoint.
-    """
-    username = request.data.get('username')
-    password = request.data.get('password')
+class LoginView(APIView):
+    permission_classes = [AllowAny]
 
-    missing_fields = []
-    if not username:
-        missing_fields.append("username")
-    if not password:
-        missing_fields.append("password")
+    def post(self, request):
+        """
+        Endpoint for staff login and token retrieval.
+        Only staff users can log in through this endpoint.
+        """
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-    if missing_fields:
+        missing_fields = []
+        if not username:
+            missing_fields.append("username")
+        if not password:
+            missing_fields.append("password")
+
+        if missing_fields:
+            return Response({
+                "error": f"The following field(s) are required: {', '.join(missing_fields)}"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            return Response({
+                "error": "Invalid username or password."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.is_staff:
+            return Response({
+                "error": "Access denied. Only staff users are allowed to log in here."
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        token, created = Token.objects.get_or_create(user=user)
         return Response({
-            "error": f"The following field(s) are required: {', '.join(missing_fields)}"
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    user = authenticate(username=username, password=password)
-
-    if user is None:
-        return Response({
-            "error": "Invalid username or password."
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    if not user.is_staff:
-        return Response({
-            "error": "Access denied. Only staff users are allowed to log in here."
-        }, status=status.HTTP_403_FORBIDDEN)
-
-    token, created = Token.objects.get_or_create(user=user)
-    return Response({
-        "token": token.key,
-        "message": "Login successful.",
-        "username": user.username,
-        "role": user.role if hasattr(user, 'role') else "staff"
-    }, status=status.HTTP_200_OK)
+            "token": token.key,
+            "message": "Login successful.",
+            "username": user.username,
+            "role": getattr(user, 'role', 'staff')
+        }, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -6,7 +6,7 @@ from .accounts.forms import CaptchaPasswordResetForm
 from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
-from .auth.auth_views import register_user, login_user, list_users
+from .auth.auth_views import register_user, list_users, LoginView
 from .ml.ml_views import AnimalMatchSuggestionView, RankedAdoptionCandidatesView
 from .payments.payments_views import process_stripe_donation, create_paypal_payment
 from .views import AnimalListCreateView, AnimalDetailView, PublicAnimalListView, FilteredAnimalListView, send_email, \
@@ -27,7 +27,7 @@ urlpatterns = [
     # path('accounts/', include('allauth.urls')),
     # Login & Register
     path('register/', register_user, name='register_staff'),
-    path('login/', login_user, name='login_user'),
+    path('login/', LoginView.as_view(), name='login_user'),
     # Password reset
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
