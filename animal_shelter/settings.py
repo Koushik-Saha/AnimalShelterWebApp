@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',  # Add Facebook/Twitter as needed
+    # Captcha
+    'django_recaptcha',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -253,3 +255,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 NOTIFICATION_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+# Replace these with your own reCAPTCHA keys
+RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
+RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
+
+RECAPTCHA_PROXY = {'http': 'http://127.0.0.1:8000', 'https': 'https://127.0.0.1:8000'}
+
+RECAPTCHA_DOMAIN = 'www.recaptcha.net'

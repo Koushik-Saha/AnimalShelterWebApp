@@ -2,6 +2,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from animal_shelter import settings
+from .accounts.forms import CaptchaPasswordResetForm
 from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
@@ -29,7 +30,10 @@ urlpatterns = [
     path('login/', login_user, name='login_user'),
     # Password reset
     path('password-reset/',
-         auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html'),
+         auth_views.PasswordResetView.as_view(
+             template_name='accounts/password_reset.html',
+             form_class=CaptchaPasswordResetForm
+         ),
          name='password_reset'),
 
     path('password-reset/done/',
