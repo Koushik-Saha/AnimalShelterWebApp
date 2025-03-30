@@ -42,8 +42,16 @@ class FosterPlacement(models.Model):
         return f"{self.animal.name} placed with {self.foster_application.full_name}"
 
 class FosterCommunication(models.Model):
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_messages")
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="received_messages")
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="foster_sent_messages"
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="foster_received_messages"
+    )
     foster_application = models.ForeignKey("FosterApplication", on_delete=models.CASCADE, related_name="communications")
     message = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)

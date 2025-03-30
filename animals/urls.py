@@ -1,7 +1,8 @@
 from django.conf.urls.static import static
 from django.urls import path
-
+from django.contrib.auth import views as auth_views
 from animal_shelter import settings
+from .accounts.forms import CaptchaPasswordResetForm
 from .admins.admin_views import AdminCustomReportView
 from .adoption.adoption_views import ApproveAdoptionRequestView
 from .analytics.analytics_views import AdoptionSuccessAnalyticsView, DonationTrendAnalyticsView, DonationCSVExportView
@@ -23,9 +24,29 @@ from django.urls import path, include
 
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
     # Login & Register
     path('register/', register_user, name='register_staff'),
     path('login/', login_user, name='login_user'),
+    # Password reset
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='accounts/password_reset.html',
+             form_class=CaptchaPasswordResetForm
+         ),
+         name='password_reset'),
+
+    path('password-reset/done/',
+         auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'),
+         name='password_reset_done'),
+
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'),
+         name='password_reset_confirm'),
+
+    path('reset/done/',
+         auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'),
+         name='password_reset_complete'),
     # Animal CRUD
     path('animals/', AnimalListCreateView.as_view(), name='animal-list'),
     path('animals/<int:pk>/', AnimalDetailView.as_view(), name='animal-detail'),
@@ -96,6 +117,14 @@ urlpatterns = [
     path('adoptionprocessmanagement/', include('animals.adoptionprocessmanagement.urls')),
     # Foster Care Management
     path('foster-applications/', include('animals.fosterprogram.urls')),
+
+    path('lost-pet-reporting/', include('animals.lostpetreporting.urls')),
+
+    path('volunteers/', include('animals.volunteer.urls')),
+
+    path('inventory/', include('animals.inventory.urls')),
+
+    path('reporting-analytics/', include('animals.reporting.urls')),
 
 ]
 
