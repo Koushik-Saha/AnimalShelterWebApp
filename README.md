@@ -54,6 +54,16 @@ A comprehensive backend API for managing an animal shelter system. Built using D
    python manage.py createsuperuser
    ```
 
+## 📬 Postman API Documentation
+
+You can explore and test all the available Animal Shelter Web App APIs through the public Postman collection using the link below:
+
+🔗 [View Full Postman Collection](https://documenter.getpostman.com/view/7026572/2sB2cRE5TU)
+
+This documentation includes all available endpoints categorized by feature module (Authentication, Animals, Adoption, Medical, Lost & Found, Volunteer, Inventory, Reporting, etc.). You can use this link to:
+- See request/response formats
+- Test requests directly using Postman's "Run in Postman" button
+- Understand required headers and authentication
 
 ## 📚 API Documentation
 
